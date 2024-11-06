@@ -69,3 +69,28 @@ void clang::dpct::NCCLRule::runRule(
   emplaceTransformation(EA.getReplacement());
   EA.applyAllSubExprRepl();
 }
+
+void ManualMigrateEnumsRule::registerMatcher(MatchFinder &MF) {
+  MF.addMatcher(declRefExpr(to(enumConstantDecl(matchesName("NCCL_.*"))))
+                    .bind("NCCLConstants"),
+                this);
+}
+
+void ManualMigrateEnumsRule::runRule(const MatchFinder::MatchResult &Result) {
+  if (const DeclRefExpr *DE =
+          getNodeAsType<DeclRefExpr>(Result, "NCCLConstants")) {
+    auto *ECD = cast<EnumConstantDecl>(DE->getDecl());
+    if (DpctGlobalInfo::isInAnalysisScope(ECD->getBeginLoc())) {
+      return;
+    }
+    report(dpct::DpctGlobalInfo::getSourceManager().getExpansionLoc(
+               DE->getBeginLoc()),
+           Diagnostics::MANUAL_MIGRATION_LIBRARY, false,
+           "Intel(R) oneAPI Collective Communications Library");
+  }
+}
+
+REGISTER_RULE(ManualMigrateEnumsRule, PassKind::PK_Migration,
+              RuleGroupKind::RK_NCCL)
+
+REGISTER_RULE(NCCLRule, PassKind::PK_Migration, RuleGroupKind::RK_NCCL)
