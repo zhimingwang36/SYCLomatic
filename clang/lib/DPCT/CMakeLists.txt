@@ -177,7 +177,7 @@ add_clang_library(DPCT
   ExprAnalysis.cpp
   ExtReplacements.cpp
   MapNames.cpp
-  SaveNewFiles.cpp
+  GenFiles.cpp
   DPCT.cpp
   DpctOptions.cpp
   TextModification.cpp

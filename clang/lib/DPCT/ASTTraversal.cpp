@@ -24,7 +24,7 @@
 #include "MisleadingBidirectional.h"
 #include "NCCLAPIMigration.h"
 #include "OptimizeMigration.h"
-#include "SaveNewFiles.h"
+#include "GenFiles.h"
 #include "SpBLASAPIMigration.h"
 #include "TextModification.h"
 #include "ThrustAPIMigration.h"
