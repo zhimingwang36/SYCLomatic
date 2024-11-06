@@ -10,6 +10,7 @@
 
 #include "ASTTraversal.h"
 #include "ExprAnalysis.h"
+#include "MigrationRuleManager.h"
 
 using namespace clang::dpct;
 using namespace clang::ast_matchers;
