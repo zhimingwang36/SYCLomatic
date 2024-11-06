@@ -8,7 +8,7 @@
 
 #include "ASTTraversal.h"
 #include "AnalysisInfo.h"
-#include "AsmMigration.h"
+#include "Asm/AsmMigration.h"
 #include "BarrierFenceSpaceAnalyzer.h"
 #include "CallExprRewriter.h"
 #include "CallExprRewriterCommon.h"
