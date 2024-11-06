@@ -164,7 +164,7 @@ add_clang_library(DPCT
   CallExprRewriterTexture.cpp
   CallExprRewriterThrust.cpp
   CallExprRewriterWarp.cpp
-  CallExprRewriterCUDNN.cpp
+  DNN/CallExprRewriterCUDNN.cpp
   CallExprRewriterErrorHandling.cpp
   CallExprRewriterLIBCU.cpp
   CallExprRewriterEvent.cpp
@@ -199,7 +199,7 @@ add_clang_library(DPCT
   BarrierFenceSpaceAnalyzer.cpp
   BLASAPIMigration.cpp
   FFTAPIMigration.cpp
-  DNNAPIMigration.cpp
+  DNN/DNNAPIMigration.cpp
   CCL/NCCLAPIMigration.cpp
   TypeLocRewriters.cpp
   AutoComplete.cpp

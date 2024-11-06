@@ -9,7 +9,7 @@
 #include "MapNames.h"
 #include "ASTTraversal.h"
 #include "CallExprRewriter.h"
-#include "DNNAPIMigration.h"
+#include "DNN/DNNAPIMigration.h"
 #include "GenFiles.h"
 #include <map>
 

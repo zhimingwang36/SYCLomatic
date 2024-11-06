@@ -12,7 +12,7 @@
 #include "BarrierFenceSpaceAnalyzer.h"
 #include "CallExprRewriter.h"
 #include "CallExprRewriterCommon.h"
-#include "DNNAPIMigration.h"
+#include "DNN/DNNAPIMigration.h"
 #include "ExprAnalysis.h"
 #include "FFTAPIMigration.h"
 #include "GenCodePinHeader.h"
