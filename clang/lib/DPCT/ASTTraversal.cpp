@@ -21,7 +21,7 @@
 #include "RulesLangLib/LIBCUAPIMigration.h"
 #include "MemberExprRewriter.h"
 #include "MigrationRuleManager.h"
-#include "MisleadingBidirectional.h"
+#include "RulesSecurity/MisleadingBidirectional.h"
 #include "RulesCCL/NCCLAPIMigration.h"
 #include "OptimizeMigration.h"
 #include "GenFiles.h"

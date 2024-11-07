@@ -23,7 +23,7 @@
 #include "MigrateCmakeScript.h"
 #include "MigratePythonBuildScript.h"
 #include "MigrationAction.h"
-#include "MisleadingBidirectional.h"
+#include "RulesSecurity/MisleadingBidirectional.h"
 #include "PatternRewriter.h"
 #include "UserDefinedRules.h"
 #include "GenFiles.h"

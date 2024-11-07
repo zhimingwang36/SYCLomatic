@@ -70,8 +70,8 @@ set(PROCESS_FILES_OUTPUT
 
 add_custom_command(
   OUTPUT Confusables.inc
-  COMMAND make_confusable_table ${CMAKE_CURRENT_SOURCE_DIR}/ConfusableTable/confusables.txt ${CMAKE_CURRENT_BINARY_DIR}/Confusables.inc
-  DEPENDS make_confusable_table ConfusableTable/confusables.txt
+  COMMAND make_confusable_table ${CMAKE_CURRENT_SOURCE_DIR}/RulesSecurity/ConfusableTable/confusables.txt ${CMAKE_CURRENT_BINARY_DIR}/Confusables.inc
+  DEPENDS make_confusable_table RulesSecurity/ConfusableTable/confusables.txt
   )
 
 add_custom_command(
@@ -106,7 +106,7 @@ include_directories(
   ../../../clang/lib/Driver/
   )
 
-add_subdirectory(ConfusableTable)
+add_subdirectory(RulesSecurity/ConfusableTable)
 
 add_clang_library(DPCT
   ASTTraversal.cpp
@@ -195,7 +195,7 @@ add_clang_library(DPCT
   MigrateCmakeScript.cpp
   MigratePythonBuildScript.cpp
   Homoglyph.cpp
-  MisleadingBidirectional.cpp
+  RulesSecurity/MisleadingBidirectional.cpp
   BarrierFenceSpaceAnalyzer.cpp
   RulesMathLib/BLASAPIMigration.cpp
   RulesMathLib/FFTAPIMigration.cpp
