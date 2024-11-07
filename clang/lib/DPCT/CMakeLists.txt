@@ -145,7 +145,7 @@ add_clang_library(DPCT
   RulesLang/Math/RewriterSIMDIntrinsics.cpp
   RulesLang/Math/RewriterCXXAPIRoutines.cpp
   RulesLang/Math/RewriterOverload.cpp
-  Rewriters/RewriterSYCLcompat.cpp
+  RulesLang/RewriterSYCLcompat.cpp
   CallExprRewriter.cpp
   RulesLang/CallExprRewriterAtomic.cpp
   RulesMathLib/CallExprRewriterCUFFT.cpp
@@ -186,15 +186,15 @@ add_clang_library(DPCT
   ExternalReplacement.cpp
   VcxprojParser.cpp
   LibraryAPIMigration.cpp
-  GenMakefile.cpp
-  InclusionHeaders.cpp
+  MigrateScript/GenMakefile.cpp
+  RulesInclude/InclusionHeaders.cpp
   IncrementalMigrationUtility.cpp
   UserDefinedRules.cpp
   PatternRewriter.cpp
-  MigrateBuildScript.cpp
-  MigrateCmakeScript.cpp
-  MigratePythonBuildScript.cpp
-  Homoglyph.cpp
+  MigrateScript/MigrateBuildScript.cpp
+  MigrateScript/MigrateCmakeScript.cpp
+  MigrateScript/MigratePythonBuildScript.cpp
+  RulesSecurity/Homoglyph.cpp
   RulesSecurity/MisleadingBidirectional.cpp
   BarrierFenceSpaceAnalyzer.cpp
   RulesMathLib/BLASAPIMigration.cpp

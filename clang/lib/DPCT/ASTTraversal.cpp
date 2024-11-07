@@ -17,7 +17,7 @@
 #include "RulesMathLib/FFTAPIMigration.h"
 #include "GenCodePinHeader.h"
 #include "GroupFunctionAnalyzer.h"
-#include "Homoglyph.h"
+#include "RulesSecurity/Homoglyph.h"
 #include "RulesLangLib/LIBCUAPIMigration.h"
 #include "MemberExprRewriter.h"
 #include "MigrationRuleManager.h"
