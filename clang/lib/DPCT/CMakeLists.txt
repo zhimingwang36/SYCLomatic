@@ -202,7 +202,7 @@ add_clang_library(DPCT
   RulesDNN/DNNAPIMigration.cpp
   RulesCCL/NCCLAPIMigration.cpp
   TypeLocRewriters.cpp
-  AutoComplete/AutoComplete.cpp
+  Linux/AutoComplete.cpp
   RulesAsm/AsmMigration.cpp
   APIMapping/QueryAPIMapping.cpp
   RulesAsm/Parser/AsmNodes.cpp

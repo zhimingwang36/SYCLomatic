@@ -10,7 +10,7 @@
 #include "APIMapping/QueryAPIMapping.h"
 #include "ASTTraversal.h"
 #include "AnalysisInfo.h"
-#include "AutoComplete/AutoComplete.h"
+#include "Linux/AutoComplete.h"
 #include "CallExprRewriter.h"
 #include "Config.h"
 #include "ErrorHandle/CrashRecovery.h"
