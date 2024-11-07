@@ -126,50 +126,50 @@ add_clang_library(DPCT
   RulesLangLib/CUB/RewriterUtilityFunctions.cpp
   RulesLangLib/CUB/RewriterDevicePartition.cpp
   RulesLangLib/CUB/RewriterDeviceSpmv.cpp
-  Rewriters/Math/CallExprRewriterMath.cpp
-  Rewriters/Math/RewriterSTDFunctions.cpp
-  Rewriters/Math/RewriterHalfArithmeticFunctions.cpp
-  Rewriters/Math/RewriterHalf2ArithmeticFunctions.cpp
-  Rewriters/Math/RewriterHalfComparisonFunctions.cpp
-  Rewriters/Math/RewriterHalf2ComparisonFunctions.cpp
-  Rewriters/Math/RewriterHalfPrecisionConversionAndDataMovement.cpp
-  Rewriters/Math/RewriterHalfMathFunctions.cpp
-  Rewriters/Math/RewriterHalf2MathFunctions.cpp
-  Rewriters/Math/RewriterBfloat16PrecisionConversionAndDataMovement.cpp
-  Rewriters/Math/RewriterSinglePrecisionMathematicalFunctions.cpp
-  Rewriters/Math/RewriterDoublePrecisionMathematicalFunctions.cpp
-  Rewriters/Math/RewriterIntegerMathematicalFunctions.cpp
-  Rewriters/Math/RewriterSinglePrecisionIntrinsics.cpp
-  Rewriters/Math/RewriterDoublePrecisionIntrinsics.cpp
-  Rewriters/Math/RewriterIntegerIntrinsics.cpp
-  Rewriters/Math/RewriterSIMDIntrinsics.cpp
-  Rewriters/Math/RewriterCXXAPIRoutines.cpp
-  Rewriters/Math/RewriterOverload.cpp
+  RulesLang/Math/CallExprRewriterMath.cpp
+  RulesLang/Math/RewriterSTDFunctions.cpp
+  RulesLang/Math/RewriterHalfArithmeticFunctions.cpp
+  RulesLang/Math/RewriterHalf2ArithmeticFunctions.cpp
+  RulesLang/Math/RewriterHalfComparisonFunctions.cpp
+  RulesLang/Math/RewriterHalf2ComparisonFunctions.cpp
+  RulesLang/Math/RewriterHalfPrecisionConversionAndDataMovement.cpp
+  RulesLang/Math/RewriterHalfMathFunctions.cpp
+  RulesLang/Math/RewriterHalf2MathFunctions.cpp
+  RulesLang/Math/RewriterBfloat16PrecisionConversionAndDataMovement.cpp
+  RulesLang/Math/RewriterSinglePrecisionMathematicalFunctions.cpp
+  RulesLang/Math/RewriterDoublePrecisionMathematicalFunctions.cpp
+  RulesLang/Math/RewriterIntegerMathematicalFunctions.cpp
+  RulesLang/Math/RewriterSinglePrecisionIntrinsics.cpp
+  RulesLang/Math/RewriterDoublePrecisionIntrinsics.cpp
+  RulesLang/Math/RewriterIntegerIntrinsics.cpp
+  RulesLang/Math/RewriterSIMDIntrinsics.cpp
+  RulesLang/Math/RewriterCXXAPIRoutines.cpp
+  RulesLang/Math/RewriterOverload.cpp
   Rewriters/RewriterSYCLcompat.cpp
   CallExprRewriter.cpp
-  CallExprRewriterAtomic.cpp
+  RulesLang/CallExprRewriterAtomic.cpp
   RulesMathLib/CallExprRewriterCUFFT.cpp
   RulesMathLib/CallExprRewriterCUBLAS.cpp
   RulesMathLib/CallExprRewriterCURAND.cpp
   RulesMathLib/CallExprRewriterCUSOLVER.cpp
   RulesMathLib/CallExprRewriterCUSPARSE.cpp
-  CallExprRewriterComplex.cpp
-  CallExprRewriterDriver.cpp
-  CallExprRewriterGraph.cpp
-  CallExprRewriterGraphicsInterop.cpp
-  CallExprRewriterMemory.cpp
-  CallExprRewriterMisc.cpp
+  RulesLang/CallExprRewriterComplex.cpp
+  RulesLang/CallExprRewriterDriver.cpp
+  RulesLang/CallExprRewriterGraph.cpp
+  RulesLang/CallExprRewriterGraphicsInterop.cpp
+  RulesLang/CallExprRewriterMemory.cpp
+  RulesLang/CallExprRewriterMisc.cpp
   RulesCCL/CallExprRewriterNccl.cpp
-  CallExprRewriterStream.cpp
-  CallExprRewriterTexture.cpp
+  RulesLang/CallExprRewriterStream.cpp
+  RulesLang/CallExprRewriterTexture.cpp
   RulesLangLib/CallExprRewriterThrust.cpp
-  CallExprRewriterWarp.cpp
+  RulesLang/CallExprRewriterWarp.cpp
   RulesDNN/CallExprRewriterCUDNN.cpp
-  CallExprRewriterErrorHandling.cpp
+  RulesLang/CallExprRewriterErrorHandling.cpp
   RulesLangLib/CallExprRewriterLIBCU.cpp
-  CallExprRewriterEvent.cpp
-  CallExprRewriterCG.cpp
-  CallExprRewriterWmma.cpp
+  RulesLang/CallExprRewriterEvent.cpp
+  RulesLang/CallExprRewriterCG.cpp
+  RulesLang/CallExprRewriterWmma.cpp
   CrashRecovery.cpp
   Diagnostics.cpp
   Error.cpp
@@ -217,7 +217,7 @@ add_clang_library(DPCT
   MigrationAction.cpp
   RulesLangLib/ThrustAPIMigration.cpp
   GenHelperFunction.cpp
-  WMMAAPIMigration.cpp
+  RulesLang/WMMAAPIMigration.cpp
   OptimizeMigration.cpp
   GroupFunctionAnalyzer.cpp
   RulesMathLib/SpBLASAPIMigration.cpp

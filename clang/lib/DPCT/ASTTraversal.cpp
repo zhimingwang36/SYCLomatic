@@ -29,7 +29,7 @@
 #include "TextModification.h"
 #include "RulesLangLib/ThrustAPIMigration.h"
 #include "Utility.h"
-#include "WMMAAPIMigration.h"
+#include "RulesLang/WMMAAPIMigration.h"
 #include "clang/AST/Decl.h"
 #include "clang/AST/Expr.h"
 #include "clang/AST/ExprCXX.h"
