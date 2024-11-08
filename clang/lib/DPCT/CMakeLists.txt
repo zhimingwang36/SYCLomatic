@@ -185,7 +185,6 @@ add_clang_library(DPCT
   CommandOption/ValidateArguments.cpp
   IncMigration/ExternalReplacement.cpp
   Windows/VcxprojParser.cpp
-  LibraryAPIMigration.cpp
   MigrateScript/GenMakefile.cpp
   RulesInclude/InclusionHeaders.cpp
   IncMigration/IncrementalMigrationUtility.cpp

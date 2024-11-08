@@ -134,7 +134,7 @@ private:
 
 enum class TextModificationID : int {
 #define TRANSFORMATION(TYPE) TYPE,
-#include "Transformations.inc"
+#include "TextModificationKind.inc"
 #undef TRANSFORMATION
 };
 

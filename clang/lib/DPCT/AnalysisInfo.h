@@ -13,7 +13,6 @@
 #include "RuleInfra/ExprAnalysis.h"
 #include "ExtReplacements.h"
 #include "RulesInclude/InclusionHeaders.h"
-#include "LibraryAPIMigration.h"
 #include "UserDefinedRules/UserDefinedRules.h"
 #include "FileGenerator/GenFiles.h"
 #include "Statics.h"
