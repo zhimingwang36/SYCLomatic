@@ -9,7 +9,7 @@
 #include "LibraryAPIMigration.h"
 #include "AnalysisInfo.h"
 #include "Diagnostics/Diagnostics.h"
-#include "MapNames.h"
+#include "RuleInfra/MapNames.h"
 #include "Utility.h"
 
 #include "clang/AST/Attr.h"

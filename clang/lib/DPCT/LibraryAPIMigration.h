@@ -9,8 +9,8 @@
 #ifndef DPCT_LIBRARY_API_MIGRATION_H
 #define DPCT_LIBRARY_API_MIGRATION_H
 
-#include "ExprAnalysis.h"
-#include "MapNames.h"
+#include "RuleInfra/ExprAnalysis.h"
+#include "RuleInfra/MapNames.h"
 
 #include "clang/AST/Attr.h"
 #include "clang/AST/Decl.h"
