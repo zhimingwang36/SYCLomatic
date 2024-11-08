@@ -110,6 +110,7 @@ add_subdirectory(RulesSecurity/ConfusableTable)
 
 add_clang_library(DPCT
   ASTTraversal.cpp
+  PreProcessor.cpp
   AnalysisInfo.cpp
   RulesLangLib/CUB/CallExprRewriterCUB.cpp
   RulesLangLib/CUB/RewriterClassMethods.cpp
