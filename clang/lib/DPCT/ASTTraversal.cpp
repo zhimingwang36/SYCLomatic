@@ -16,6 +16,8 @@
 #include "RulesDNN/DNNAPIMigration.h"
 #include "RuleInfra/ExprAnalysis.h"
 #include "RulesMathLib/FFTAPIMigration.h"
+#include "RulesMathLib/RandomAPIMigration.h"
+#include "RulesMathLib/SolverAPIMigration.h"
 #include "CodePin/GenCodePinHeader.h"
 #include "RulesSecurity/Homoglyph.h"
 #include "RulesLangLib/LIBCUAPIMigration.h"
@@ -155,31 +157,29 @@ REGISTER_RULE(AssertRule, PassKind::PK_Migration)
 REGISTER_RULE(GraphRule, PassKind::PK_Migration)
 REGISTER_RULE(GraphicsInteropRule, PassKind::PK_Migration)
 
-//
 REGISTER_RULE(BLASEnumsRule, PassKind::PK_Migration, RuleGroupKind::RK_BLas)
-REGISTER_RULE(RandomEnumsRule, PassKind::PK_Migration, RuleGroupKind::RK_Rng)
+REGISTER_RULE(BLASFunctionCallRule, PassKind::PK_Migration,RuleGroupKind::RK_BLas)
+
 REGISTER_RULE(SPBLASEnumsRule, PassKind::PK_Migration, RuleGroupKind::RK_Sparse)
 REGISTER_RULE(SPBLASFunctionCallRule, PassKind::PK_Migration,RuleGroupKind::RK_Sparse)
+
+REGISTER_RULE(RandomEnumsRule, PassKind::PK_Migration, RuleGroupKind::RK_Rng)
 REGISTER_RULE(RandomFunctionCallRule, PassKind::PK_Migration,RuleGroupKind::RK_Rng)
 REGISTER_RULE(DeviceRandomFunctionCallRule, PassKind::PK_Migration,RuleGroupKind::RK_Rng)
-REGISTER_RULE(BLASFunctionCallRule, PassKind::PK_Migration,RuleGroupKind::RK_BLas)
+
 REGISTER_RULE(SOLVEREnumsRule, PassKind::PK_Migration, RuleGroupKind::RK_Solver)
 REGISTER_RULE(SOLVERFunctionCallRule, PassKind::PK_Migration,RuleGroupKind::RK_Solver)
 
-//
 REGISTER_RULE(LIBCURule, PassKind::PK_Migration, RuleGroupKind::RK_Libcu)
-//
+
 REGISTER_RULE(ThrustAPIRule, PassKind::PK_Migration, RuleGroupKind::RK_Thrust)
 REGISTER_RULE(ThrustTypeRule, PassKind::PK_Migration, RuleGroupKind::RK_Thrust)
-// Rules NCCL
+
 REGISTER_RULE(ManualMigrateEnumsRule, PassKind::PK_Migration, RuleGroupKind::RK_NCCL)
 REGISTER_RULE(NCCLRule, PassKind::PK_Migration, RuleGroupKind::RK_NCCL)
 
-
-// Rules FFT
 REGISTER_RULE(FFTEnumsRule, PassKind::PK_Migration, RuleGroupKind::RK_FFT)
 REGISTER_RULE(FFTFunctionCallRule, PassKind::PK_Migration,RuleGroupKind::RK_FFT)
 
-// Rules DNN
 REGISTER_RULE(CuDNNTypeRule, PassKind::PK_Migration, RuleGroupKind::RK_DNN)
 REGISTER_RULE(CuDNNAPIRule, PassKind::PK_Migration, RuleGroupKind::RK_DNN)

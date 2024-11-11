@@ -239,6 +239,7 @@ protected:
   }
 };
 
+
 template <typename T> const char NamedMigrationRule<T>::ID(0);
 
 
