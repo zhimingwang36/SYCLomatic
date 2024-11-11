@@ -112,6 +112,7 @@ add_clang_library(DPCT
   ASTTraversal.cpp
   PreProcessor.cpp
   AnalysisInfo.cpp
+  RulesLang/RulesLang.cpp
   RulesLangLib/CUB/CallExprRewriterCUB.cpp
   RulesLangLib/CUB/RewriterClassMethods.cpp
   RulesLangLib/CUB/RewriterDeviceHistgram.cpp
