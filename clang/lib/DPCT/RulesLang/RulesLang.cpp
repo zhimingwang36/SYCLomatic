@@ -67,46 +67,6 @@ using namespace clang::tooling;
 extern clang::tooling::UnifiedPath DpctInstallPath; // Installation directory for this tool
 extern DpctOption<opt, bool> ProcessAll;
 
-TextModification *clang::dpct::replaceText(SourceLocation Begin, SourceLocation End,
-                              std::string &&Str, const SourceManager &SM) {
-  auto Length = SM.getFileOffset(End) - SM.getFileOffset(Begin);
-  if (Length > 0) {
-    return new ReplaceText(Begin, Length, std::move(Str));
-  }
-  return nullptr;
-}
-
-SourceLocation getArgEndLocation(const CallExpr *C, unsigned Idx,
-                                 const SourceManager &SM) {
-  auto SL = getStmtExpansionSourceRange(C->getArg(Idx)).getEnd();
-  return SL.getLocWithOffset(Lexer::MeasureTokenLength(
-      SL, SM, DpctGlobalInfo::getContext().getLangOpts()));
-}
-
-/// Return a TextModication that removes nth argument of the CallExpr,
-/// together with the preceding comma.
-TextModification *clang::dpct::removeArg(const CallExpr *C, unsigned n,
-                            const SourceManager &SM) {
-  if (C->getNumArgs() <= n)
-    return nullptr;
-  if (C->getArg(n)->isDefaultArgument())
-    return nullptr;
-
-  SourceLocation Begin, End;
-  if (n) {
-    Begin = getArgEndLocation(C, n - 1, SM);
-    End = getArgEndLocation(C, n, SM);
-  } else {
-    Begin = getStmtExpansionSourceRange(C->getArg(n)).getBegin();
-    if (C->getNumArgs() > 1) {
-      End = getStmtExpansionSourceRange(C->getArg(n + 1)).getBegin();
-    } else {
-      End = getArgEndLocation(C, n, SM);
-    }
-  }
-  return replaceText(Begin, End, "", SM);
-}
-
 auto parentStmt = []() {
   return anyOf(
       hasParent(compoundStmt()), hasParent(forStmt()), hasParent(whileStmt()),
