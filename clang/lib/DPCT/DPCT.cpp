@@ -23,7 +23,6 @@
 #include "MigrateScript/MigrateCmakeScript.h"
 #include "MigrateScript/MigratePythonBuildScript.h"
 #include "MigrationAction.h"
-#include "RulesSecurity/MisleadingBidirectional.h"
 #include "UserDefinedRules/PatternRewriter.h"
 #include "UserDefinedRules/UserDefinedRules.h"
 #include "FileGenerator/GenFiles.h"
@@ -31,12 +30,8 @@
 #include "RuleInfra/TypeLocRewriters.h"
 #include "Utility.h"
 #include "CommandOption/ValidateArguments.h"
-#include "Windows/VcxprojParser.h"
-#include "clang/AST/ASTConsumer.h"
-#include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/Format/Format.h"
 #include "clang/Frontend/CompilerInstance.h"
-#include "clang/Frontend/FrontendActions.h"
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "clang/Tooling/Core/UnifiedPath.h"
 #include "clang/Tooling/Refactoring.h"
@@ -44,7 +39,6 @@
 #include "llvm/ADT/SmallString.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Support/FileSystem.h"
-#include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/Path.h"
 #include "llvm/Support/Program.h"
 #include "llvm/TargetParser/Host.h"
@@ -56,7 +50,6 @@
 #include "clang/Driver/Options.h"
 #include <algorithm>
 #include <cstring>
-#include <fstream>
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
@@ -69,8 +62,6 @@
 #include "clang/DPCT/DpctOptions.h"
 #include "clang/Frontend/TextDiagnosticPrinter.h"
 #include "clang/Rewrite/Core/Rewriter.h"
-
-#include <signal.h>
 
 using namespace clang;
 using namespace clang::ast_matchers;

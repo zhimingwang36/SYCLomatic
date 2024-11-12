@@ -10,14 +10,11 @@
 #include "RulesLang/RulesLang.h"
 #include "AnalysisInfo.h"
 #include "RulesAsm/AsmMigration.h"
-#include "RulesLang/BarrierFenceSpaceAnalyzer.h"
-#include "RuleInfra/CallExprRewriter.h"
-#include "RuleInfra/CallExprRewriterCommon.h"
 #include "RulesDNN/DNNAPIMigration.h"
-#include "RuleInfra/ExprAnalysis.h"
 #include "RulesMathLib/FFTAPIMigration.h"
 #include "RulesMathLib/RandomAPIMigration.h"
 #include "RulesMathLib/SolverAPIMigration.h"
+#include "RulesMathLib/BLASAPIMigration.h"
 #include "CodePin/GenCodePinHeader.h"
 #include "RulesSecurity/Homoglyph.h"
 #include "RulesLangLib/LIBCUAPIMigration.h"
@@ -30,7 +27,6 @@
 #include "RulesLangLib/ThrustAPIMigration.h"
 #include "Utility.h"
 #include "RulesLang/WMMAAPIMigration.h"
-#include "clang/AST/Decl.h"
 
 #include <string>
 #include <unordered_map>

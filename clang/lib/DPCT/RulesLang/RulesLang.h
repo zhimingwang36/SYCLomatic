@@ -11,10 +11,6 @@
 
 #include "AnalysisInfo.h"
 #include "ASTTraversal.h"
-#include "ErrorHandle/CrashRecovery.h"
-#include "Diagnostics/Diagnostics.h"
-#include "RulesMathLib/FFTAPIMigration.h"
-#include "RulesInclude/InclusionHeaders.h"
 #include "RuleInfra/MapNames.h"
 #include "TextModification.h"
 #include "Utility.h"
@@ -25,7 +21,6 @@
 #include "clang/Frontend/CompilerInstance.h"
 
 #include <algorithm>
-#include <sstream>
 #include <unordered_set>
 
 namespace clang {
