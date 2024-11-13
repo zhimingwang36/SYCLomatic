@@ -49,6 +49,7 @@
 
 using namespace clang;
 using namespace dpct;
+using namespace clang::dpct;
 using namespace tooling;
 using namespace ast_matchers;
 
