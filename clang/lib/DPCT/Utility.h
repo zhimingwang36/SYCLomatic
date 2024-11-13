@@ -443,7 +443,7 @@ void getNameSpace(const NamespaceDecl *NSD,
                   std::vector<std::string> &Namespaces);
 std::string getTemplateArgumentAsString(const clang::TemplateArgument &Arg,
                                         const clang::ASTContext &Ctx);
-
+// utils
 bool needExtraParens(const clang::Expr *);
 bool needExtraParensInMemberExpr(const clang::Expr *);
 bool getTypeRange(const clang::VarDecl *PVD, clang::SourceRange &SR);
