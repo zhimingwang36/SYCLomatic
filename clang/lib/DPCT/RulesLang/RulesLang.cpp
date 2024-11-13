@@ -617,7 +617,7 @@ void ErrorHandlingHostAPIRule::runRule(const MatchFinder::MatchResult &Result) {
   // For each reference of TD, check if the location is after CE,
   // if yes, add try catch.
   std::vector<const DeclRefExpr *> Refs;
-  VarReferencedInFD(FD->getBody(), TD, Refs);
+  getVarReferencedInFD(FD->getBody(), TD, Refs);
   SourceManager &SM = DpctGlobalInfo::getSourceManager();
   auto CallLoc = SM.getExpansionLoc(CE->getBeginLoc());
   for (auto It = Refs.begin(); It != Refs.end(); ++It) {
@@ -6502,7 +6502,7 @@ void MemoryMigrationRule::mallocMigrationWithTransformation(
 
 /// e.g., for int *a and cudaMalloc(&a, size), print "a = ".
 /// If \p DerefType is not null, assign a string "int *".
-void printDerefOp(std::ostream &OS, const Expr *E, std::string *DerefType) {
+void clang::dpct::printDerefOp(std::ostream &OS, const Expr *E, std::string *DerefType) {
   E = E->IgnoreImplicitAsWritten();
   bool NeedDerefOp = true;
   if (auto UO = dyn_cast<UnaryOperator>(E)) {

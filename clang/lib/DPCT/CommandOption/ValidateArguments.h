@@ -14,6 +14,9 @@
 #include <string>
 #include <vector>
 
+namespace clang {
+namespace dpct {
+
 #if defined(_WIN32)
 #define MAX_PATH_LEN _MAX_PATH
 #define MAX_NAME_LEN _MAX_FNAME
@@ -140,4 +143,6 @@ bool checkReportArgs(ReportTypeEnum &RType, ReportFormatEnum &RFormat,
 /// -1: Path is invalid
 int checkSDKPathOrIncludePath(clang::tooling::UnifiedPath &Path);
 
+} // namespace dpct
+} // namespace clang
 #endif // DPCT_VALIDATE_ARGUMENTS_H

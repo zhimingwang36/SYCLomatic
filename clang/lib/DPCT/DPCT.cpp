@@ -139,6 +139,7 @@ static llvm::cl::opt<AutoCompletePrinter, true, llvm::cl::parser<std::string>> A
 // TODO: implement one of this for each source language.
 UnifiedPath CudaPath;
 UnifiedPath DpctInstallPath;
+
 std::unordered_map<std::string, bool> ChildOrSameCache;
 std::unordered_map<std::string, bool> ChildPathCache;
 std::unordered_map<std::string, bool> IsDirectoryCache;
@@ -1066,7 +1067,7 @@ int runDPCT(int argc, const char **argv) {
     DpctGlobalInfo::setExcludePath(ExcludePathList);
   }
 
-  std::set<ExplicitNamespace> ExplicitNamespaces;
+  std::set<clang::dpct::ExplicitNamespace> ExplicitNamespaces;
   if (UseExplicitNamespace.getNumOccurrences()) {
     ExplicitNamespaces.insert(UseExplicitNamespace.begin(),
                               UseExplicitNamespace.end());

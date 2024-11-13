@@ -43,6 +43,8 @@ void setGetReplacedNamePtr(llvm::StringRef (*Ptr)(const clang::NamedDecl *D));
 
 namespace clang {
 namespace dpct {
+
+using format::FormatRange;
 using LocInfo = std::pair<tooling::UnifiedPath, unsigned int>;
 template <class F, class... Ts>
 std::string buildStringFromPrinter(F Func, Ts &&...Args) {

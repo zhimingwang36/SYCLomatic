@@ -50,7 +50,28 @@ UnifiedPath getFormatSearchPath();
 } // namespace tooling
 } // namespace clang
 
+
 extern std::map<std::string, uint64_t> ErrorCnt;
+
+/// Calculate the ranges of the input \p Ranges after \p Repls is applied to
+/// the files.
+/// \param Repls Replacements to apply.
+/// \param Ranges Ranges before applying the replacements.
+/// \return The result ranges.
+std::vector<clang::tooling::Range>
+calculateUpdatedRanges(const clang::tooling::Replacements &Repls,
+                       const std::vector<clang::tooling::Range> &Ranges) {
+  std::vector<clang::tooling::Range> Result;
+  for (const auto &R : Ranges) {
+    unsigned int BOffset = Repls.getShiftedCodePosition(R.getOffset());
+    unsigned int EOffset =
+        Repls.getShiftedCodePosition(R.getOffset() + R.getLength());
+    if (BOffset > EOffset)
+      continue;
+    Result.emplace_back(BOffset, EOffset - BOffset);
+  }
+  return Result;
+}
 
 static bool formatFile(const clang::tooling::UnifiedPath &FileName,
                        const std::vector<clang::tooling::Range> &Ranges,

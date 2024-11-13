@@ -23,6 +23,10 @@ using namespace llvm;
 using namespace std;
 namespace path = llvm::sys::path;
 namespace fs = llvm::sys::fs;
+
+namespace clang {
+namespace dpct {
+
 bool isOutRootAccess(SmallString<256> &OutRoot) {
   if (!fs::can_write(OutRoot)) {
     llvm::errs() << "Could not access out-root directory.\n";
@@ -95,7 +99,7 @@ bool makeInRootCanonicalOrSetDefaults(
       return false;
   } else if (InRoot.getCanonicalPath().empty()) {
     clang::dpct::ShowStatus(MigrationErrorInvalidInRootPath);
-    dpctExit(MigrationErrorInvalidInRootPath);
+    clang::dpct::dpctExit(MigrationErrorInvalidInRootPath);
   }
   if (fs::get_file_type(InRoot.getCanonicalPath()) !=
       fs::file_type::directory_file) {
@@ -168,7 +172,7 @@ int validateBuildScriptPaths(const clang::tooling::UnifiedPath &InRoot,
                    << InRoot << "'\n";
     }
     if (fs::is_regular_file(Canonical.getCanonicalPath()) &&
-        !isChildPath(InRoot, Canonical)) {
+        !clang::dpct::isChildPath(InRoot, Canonical)) {
       Ok = -4;
       llvm::errs() << "Error: File '" << Canonical.getCanonicalPath()
                    << "' is not under the specified input root directory '"
@@ -243,3 +247,5 @@ bool checkReportArgs(ReportTypeEnum &RType, ReportFormatEnum &RFormat,
 
   return Success;
 }
+} // namespace dpct
+} // namespace clang
