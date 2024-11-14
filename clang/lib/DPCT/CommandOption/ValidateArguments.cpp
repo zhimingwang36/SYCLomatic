@@ -21,11 +21,62 @@
 
 using namespace llvm;
 using namespace std;
+using namespace clang::tooling;
 namespace path = llvm::sys::path;
 namespace fs = llvm::sys::fs;
 
+
+extern UnifiedPath CudaPath;
+extern UnifiedPath DpctInstallPath;
+
 namespace clang {
 namespace dpct {
+
+// To validate the root path of the project to be migrated.
+void validateInputDirectory(UnifiedPath InRootPath) {
+  if (isChildOrSamePath(CudaPath, InRootPath)) {
+    ShowStatus(MigrationErrorRunFromSDKFolder);
+    dpctExit(MigrationErrorRunFromSDKFolder);
+  }
+  if (isChildOrSamePath(InRootPath, CudaPath)) {
+    ShowStatus(MigrationErrorInputDirContainSDKFolder);
+    dpctExit(MigrationErrorInputDirContainSDKFolder);
+  }
+
+  if (isChildOrSamePath(InRootPath, DpctInstallPath)) {
+    ShowStatus(MigrationErrorInputDirContainCTTool);
+    dpctExit(MigrationErrorInputDirContainCTTool);
+  }
+}
+
+void validateInputDirectoryLengthOrExit(string OptionName, UnifiedPath Path){
+    if (Path.getPath().size() >= MAX_PATH_LEN - 1) {
+    DpctLog() << "Error: " << OptionName << " '" << Path.getPath() << "' is too long\n";
+    ShowStatus(MigrationErrorPathTooLong);
+    dpctExit(MigrationErrorPathTooLong);
+  }
+}
+void checkOptionLengthLimitOrExit(string OptionName, string OptionValue, int Limit)
+{
+  if (OptionValue.size() >= Limit) {
+    DpctLog() << "Error: " << OptionName << " '" << OptionValue
+              << "' is too long\n";
+    ShowStatus(MigrationErrorPrefixTooLong);
+    dpctExit(MigrationErrorPrefixTooLong);
+  }
+}
+
+void checkSpecialCharsOrExit(string OptionName, string OptionValue) {
+  auto P = std::find_if_not(
+      OptionValue.begin(), OptionValue.end(),
+      [](char C) { return ::isalpha(C) || ::isdigit(C) || C == '_'; });
+  if (P != OptionValue.end()) {
+    DpctLog() << "Error: " << OptionName << " contains special character '"
+              << *P << "' \n";
+    ShowStatus(MigrationErrorSpecialCharacter);
+    dpctExit(MigrationErrorSpecialCharacter);
+  }
+}
 
 bool isOutRootAccess(SmallString<256> &OutRoot) {
   if (!fs::can_write(OutRoot)) {

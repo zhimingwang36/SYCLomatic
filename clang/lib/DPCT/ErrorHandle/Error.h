@@ -67,7 +67,7 @@ enum ProcessStatus {
   MigrationErrorNoExplicitInRootAndBuildScript = -52,
   MigrationErrorCannotWrite = -53,
   MigratePythonBuildScriptOnlyNotSpecifed = -54,
-};
+  };
 
 namespace clang {
 namespace dpct {

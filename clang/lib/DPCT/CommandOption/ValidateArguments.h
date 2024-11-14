@@ -143,6 +143,10 @@ bool checkReportArgs(ReportTypeEnum &RType, ReportFormatEnum &RFormat,
 /// -1: Path is invalid
 int checkSDKPathOrIncludePath(clang::tooling::UnifiedPath &Path);
 
+void validateInputDirectory(clang::tooling::UnifiedPath InRootPath);
+void validateInputDirectoryLengthOrExit(std::string OptionName, clang::tooling::UnifiedPath Path);
+void checkOptionLengthLimitOrExit(std::string OptionName, std::string OptionValue, int Limit=128);
+void checkSpecialCharsOrExit(std::string OptionName, std::string OptionValue);
 } // namespace dpct
 } // namespace clang
 #endif // DPCT_VALIDATE_ARGUMENTS_H
