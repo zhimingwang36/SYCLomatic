@@ -35,6 +35,9 @@
 using namespace clang;
 using namespace clang::dpct;
 
+namespace clang {
+namespace dpct {
+
 unsigned MigrationRule::PairID = 0;
 
 void MigrationRule::print(llvm::raw_ostream &OS) {
@@ -179,3 +182,6 @@ REGISTER_RULE(FFTFunctionCallRule, PassKind::PK_Migration,RuleGroupKind::RK_FFT)
 
 REGISTER_RULE(CuDNNTypeRule, PassKind::PK_Migration, RuleGroupKind::RK_DNN)
 REGISTER_RULE(CuDNNAPIRule, PassKind::PK_Migration, RuleGroupKind::RK_DNN)
+
+} // namespace dpct
+} // namespace clang

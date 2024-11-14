@@ -9,6 +9,7 @@
 #include "RandomAPIMigration.h"
 #include "RuleInfra/CallExprRewriter.h"
 #include "RuleInfra/CallExprRewriterCommon.h"
+#include "RuleInfra/ASTmatcherCommon.h"
 
 namespace clang {
 namespace dpct {
@@ -68,14 +69,6 @@ void RandomEnumsRule::runRule(const MatchFinder::MatchResult &Result) {
 
 // Rule for Random function calls. Currently only support host APIs.
 void RandomFunctionCallRule::registerMatcher(MatchFinder &MF) {
-    auto parentStmt = []() {
-    return anyOf(
-        hasParent(compoundStmt()), hasParent(forStmt()), hasParent(whileStmt()),
-        hasParent(doStmt()), hasParent(ifStmt()),
-        hasParent(exprWithCleanups(anyOf(
-            hasParent(compoundStmt()), hasParent(forStmt()),
-            hasParent(whileStmt()), hasParent(doStmt()), hasParent(ifStmt())))));
-    };
   auto functionName = [&]() {
     return hasAnyName(
         "curandCreateGenerator", "curandSetPseudoRandomGeneratorSeed",

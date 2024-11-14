@@ -10,6 +10,7 @@
 #include "RuleInfra/CallExprRewriter.h"
 #include "RuleInfra/CallExprRewriterCommon.h"
 #include "RulesLang/RulesLang.h"
+#include "RuleInfra/ASTmatcherCommon.h"
 
 namespace clang {
 namespace dpct {
@@ -56,14 +57,7 @@ void SOLVEREnumsRule::runRule(const MatchFinder::MatchResult &Result) {
 
 
 void SOLVERFunctionCallRule::registerMatcher(MatchFinder &MF) {
-  auto parentStmt = []() {
-    return anyOf(
-        hasParent(compoundStmt()), hasParent(forStmt()), hasParent(whileStmt()),
-        hasParent(doStmt()), hasParent(ifStmt()),
-        hasParent(exprWithCleanups(anyOf(
-            hasParent(compoundStmt()), hasParent(forStmt()),
-            hasParent(whileStmt()), hasParent(doStmt()), hasParent(ifStmt())))));
-    };
+  
   auto functionName = [&]() {
     return hasAnyName(
         "cusolverDnSetAdvOptions", "cusolverDnGetStream", "cusolverDnSetStream",

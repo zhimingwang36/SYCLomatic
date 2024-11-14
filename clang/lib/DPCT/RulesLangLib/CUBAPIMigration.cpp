@@ -11,6 +11,7 @@
 #include "TextModification.h"
 #include "AnalysisInfo.h"
 #include "RuleInfra/CallExprRewriter.h"
+#include "RuleInfra/ASTmatcherCommon.h"
 #include "RuleInfra/ExprAnalysis.h"
 #include "MigrationRuleManager.h"
 #include "TextModification.h"
@@ -54,11 +55,7 @@ using namespace tooling;
 using namespace ast_matchers;
 
 namespace {
-auto parentStmt = []() {
-  return anyOf(hasParent(compoundStmt()), hasParent(forStmt()),
-               hasParent(whileStmt()), hasParent(doStmt()),
-               hasParent(ifStmt()));
-};
+
 
 auto isDeviceFuncCallExpr = []() {
   auto hasDeviceFuncName = []() {
@@ -767,7 +764,7 @@ void CubRule::registerMatcher(ast_matchers::MatchFinder &MF) {
                          "ShuffleIndex", "ThreadLoad", "ThreadStore", "Sum",
                          "Reduce", "ExclusiveSum", "InclusiveSum",
                          "InclusiveScan", "ExclusiveScan"))),
-                     parentStmt()))
+                     parentStmtCub()))
           .bind("FuncCall"),
       this);
 
@@ -776,7 +773,7 @@ void CubRule::registerMatcher(ast_matchers::MatchFinder &MF) {
                          "Sum", "Reduce", "ThreadLoad", "ShuffleIndex",
                          "ExclusiveSum", "InclusiveSum", "InclusiveScan",
                          "ExclusiveScan"))),
-                     unless(parentStmt())))
+                     unless(parentStmtCub())))
           .bind("FuncCallUsed"),
       this);
 }

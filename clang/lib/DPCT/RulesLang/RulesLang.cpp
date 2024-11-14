@@ -14,6 +14,7 @@
 #include "RulesLang/BarrierFenceSpaceAnalyzer.h"
 #include "RuleInfra/CallExprRewriter.h"
 #include "RuleInfra/CallExprRewriterCommon.h"
+#include "RuleInfra/ASTmatcherCommon.h"
 #include "RulesDNN/DNNAPIMigration.h"
 #include "RuleInfra/ExprAnalysis.h"
 #include "RulesMathLib/FFTAPIMigration.h"
@@ -66,15 +67,12 @@ using namespace clang::tooling;
 
 extern clang::tooling::UnifiedPath DpctInstallPath; // Installation directory for this tool
 extern DpctOption<opt, bool> ProcessAll;
+extern DpctOption<opt, bool> AsyncHandler;
 
-auto parentStmt = []() {
-  return anyOf(
-      hasParent(compoundStmt()), hasParent(forStmt()), hasParent(whileStmt()),
-      hasParent(doStmt()), hasParent(ifStmt()),
-      hasParent(exprWithCleanups(anyOf(
-          hasParent(compoundStmt()), hasParent(forStmt()),
-          hasParent(whileStmt()), hasParent(doStmt()), hasParent(ifStmt())))));
-};
+namespace clang{
+namespace dpct{
+
+
 
 static const CXXConstructorDecl *getIfConstructorDecl(const Decl *ND) {
   if (const auto *Tmpl = dyn_cast<FunctionTemplateDecl>(ND))
@@ -2012,6 +2010,8 @@ void VectorTypeMemberAccessRule::runRule(
   }
 }
 
+} //namespace clang
+} //namespace dpct
 
 namespace clang {
 namespace ast_matchers {
@@ -2070,6 +2070,9 @@ AST_MATCHER(FunctionDecl, overloadedVectorOperator) {
 
 } // namespace ast_matchers
 } // namespace clang
+
+namespace clang {
+namespace dpct {
 
 void VectorTypeOperatorRule::registerMatcher(MatchFinder &MF) {
   auto vectorTypeOverLoadedOperator = [&]() {
@@ -4679,7 +4682,6 @@ void StreamAPICallRule::registerMatcher(MatchFinder &MF) {
 }
 
 std::string getNewQueue(int Index) {
-  extern DpctOption<opt, bool> AsyncHandler;
   std::string Result;
   llvm::raw_string_ostream OS(Result);
   printPartialArguments(OS << "{{NEEDREPLACED" << std::to_string(Index)
@@ -6502,7 +6504,7 @@ void MemoryMigrationRule::mallocMigrationWithTransformation(
 
 /// e.g., for int *a and cudaMalloc(&a, size), print "a = ".
 /// If \p DerefType is not null, assign a string "int *".
-void clang::dpct::printDerefOp(std::ostream &OS, const Expr *E, std::string *DerefType) {
+void printDerefOp(std::ostream &OS, const Expr *E, std::string *DerefType) {
   E = E->IgnoreImplicitAsWritten();
   bool NeedDerefOp = true;
   if (auto UO = dyn_cast<UnaryOperator>(E)) {
@@ -11803,3 +11805,6 @@ void GraphicsInteropRule::runRule(
   emplaceTransformation(EA.getReplacement());
   EA.applyAllSubExprRepl();
 }
+
+} //namespace clang
+} //namespace dpct

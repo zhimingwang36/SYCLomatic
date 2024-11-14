@@ -6,6 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 #include "UserDefinedRules/UserDefinedRules.h"
+#include "RuleInfra/ASTmatcherCommon.h"
 #include "ASTTraversal.h"
 #include "RulesLang/RulesLang.h"
 #include "RuleInfra/CallExprRewriter.h"
@@ -22,6 +23,8 @@
 using namespace clang::ast_matchers;
 using namespace clang::dpct;
 
+namespace clang {
+namespace dpct {
 std::vector<clang::tooling::UnifiedPath> MetaRuleObject::RuleFiles;
 std::vector<std::shared_ptr<MetaRuleObject>> MetaRules;
 
@@ -782,3 +785,6 @@ void clang::dpct::UserDefinedEnumRule::runRule(
     EA.applyAllSubExprRepl();
   }
 }
+
+} // namespace dpct
+} // namespace clang

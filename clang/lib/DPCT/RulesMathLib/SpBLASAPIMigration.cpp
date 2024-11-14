@@ -9,6 +9,7 @@
 #include "SpBLASAPIMigration.h"
 #include "RuleInfra/CallExprRewriter.h"
 #include "RuleInfra/CallExprRewriterCommon.h"
+#include "RuleInfra/ASTmatcherCommon.h"
 
 namespace clang {
 namespace dpct {
@@ -39,14 +40,7 @@ void SpBLASTypeLocRule::runRule(
 
 // Rule for spBLAS function calls.
 void SPBLASFunctionCallRule::registerMatcher(MatchFinder &MF) {
-  auto parentStmt = []() {
-  return anyOf(
-      hasParent(compoundStmt()), hasParent(forStmt()), hasParent(whileStmt()),
-      hasParent(doStmt()), hasParent(ifStmt()),
-      hasParent(exprWithCleanups(anyOf(
-          hasParent(compoundStmt()), hasParent(forStmt()),
-          hasParent(whileStmt()), hasParent(doStmt()), hasParent(ifStmt())))));
-  };
+
 
   auto functionName = [&]() {
     return hasAnyName(

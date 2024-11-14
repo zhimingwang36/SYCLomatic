@@ -1,4 +1,4 @@
-//===--------------- GenFiles.cpp -------------------------------------===//
+//===--------------- GenFiles.cpp ----------------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -44,14 +44,17 @@ using namespace llvm;
 namespace path = llvm::sys::path;
 namespace fs = llvm::sys::fs;
 
+extern DpctOption<clang::dpct::opt, bool> ProcessAll;
+extern DpctOption<dpct::opt, std::string> BuildScriptFile;
+extern DpctOption<dpct::opt, bool> GenBuildScript;
+extern std::map<std::string, uint64_t> ErrorCnt;
+
 namespace clang {
 namespace tooling {
 UnifiedPath getFormatSearchPath();
 } // namespace tooling
-} // namespace clang
 
-
-extern std::map<std::string, uint64_t> ErrorCnt;
+namespace dpct{
 
 /// Calculate the ranges of the input \p Ranges after \p Repls is applied to
 /// the files.
@@ -294,7 +297,6 @@ void copyFileToOutRoot(clang::tooling::UnifiedPath &InRoot,
 void processallOptionAction(clang::tooling::UnifiedPath &InRoot,
                             clang::tooling::UnifiedPath &OutRoot,
                             bool IsForSYCL) {
-  extern DpctOption<clang::dpct::opt, bool> ProcessAll;
   if (ProcessAll) {
     std::error_code EC;
     for (fs::recursive_directory_iterator Iter(Twine(InRoot.getPath()), EC),
@@ -440,8 +442,6 @@ void processAllFiles(StringRef InRoot, StringRef OutRoot,
   }
 }
 
-extern DpctOption<dpct::opt, std::string> BuildScriptFile;
-extern DpctOption<dpct::opt, bool> GenBuildScript;
 
 static void getMainSrcFilesRepls(
     std::vector<clang::tooling::Replacement> &MainSrcFilesRepls) {
@@ -938,7 +938,6 @@ int saveNewFiles(clang::tooling::RefactoringTool &Tool,
   SourceManager Sources(Diagnostics, Tool.getFiles());
   Rewriter Rewrite(Sources, DefaultLangOptions);
   Rewriter DebugCUDARewrite(Sources, DefaultLangOptions);
-  extern DpctOption<clang::dpct::opt, bool> ProcessAll;
 
   // The variable defined here assists to merge history records.
   std::unordered_map<std::string /*FileName*/,
@@ -1234,3 +1233,6 @@ void loadYAMLIntoFileInfo(clang::tooling::UnifiedPath Path) {
     }
   }
 }
+
+} // namespace dpct
+} // namespace clang

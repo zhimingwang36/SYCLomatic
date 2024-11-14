@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "BLASAPIMigration.h"
+#include "RuleInfra/ASTmatcherCommon.h"
 
 namespace clang {
 namespace dpct {
@@ -56,14 +57,7 @@ bool checkConstQualifierInDoublePointerType(
   return false;
 }
 
-auto parentStmt = []() {
-  return anyOf(
-      hasParent(compoundStmt()), hasParent(forStmt()), hasParent(whileStmt()),
-      hasParent(doStmt()), hasParent(ifStmt()),
-      hasParent(exprWithCleanups(anyOf(
-          hasParent(compoundStmt()), hasParent(forStmt()),
-          hasParent(whileStmt()), hasParent(doStmt()), hasParent(ifStmt())))));
-};
+
 
 // Rule for BLAS enums.
 // Migrate BLAS status values to corresponding int values
