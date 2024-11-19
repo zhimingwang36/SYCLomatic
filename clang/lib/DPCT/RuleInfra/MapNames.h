@@ -57,27 +57,6 @@ public:
   static const std::string &getLibraryHelperNamespace();
   static const std::string &getCheckErrorMacroName();
 
-  struct BLASFuncComplexReplInfo {
-    std::vector<int> BufferIndexInfo;
-    std::vector<int> PointerIndexInfo;
-    std::vector<std::string> BufferTypeInfo;
-    std::vector<std::string> PointerTypeInfo;
-    std::vector<int> OperationIndexInfo;
-    int FillModeIndexInfo;
-    int SideModeIndexInfo;
-    int DiagTypeIndexInfo;
-    std::string ReplName;
-  };
-
-  struct BLASGemmExTypeInfo {
-    std::string OriginScalarType;
-    std::string ScalarType;
-    std::string OriginABType;
-    std::string ABType;
-    std::string OriginCType;
-    std::string CType;
-  };
-
   struct ThrustFuncReplInfo {
     std::string ReplName;
     std::string ExtraParam;
@@ -108,22 +87,10 @@ public:
   static std::unordered_map<std::string, MacroMigrationRule> MacroRuleMap;
   static std::unordered_map<std::string, MetaRuleObject &> HeaderRuleMap;
   static MapTy CUBEnumsMap;
-  static MapTy BLASEnumsMap;
-  static MapTy SPBLASEnumsMap;
   static const SetTy ThrustFileExcludeSet;
   static ThrustMapTy ThrustFuncNamesMap;
   static std::map<std::string, clang::dpct::HelperFeatureEnum>
       ThrustFuncNamesHelperFeaturesMap;
-
-  static const std::map<std::string, MapNames::BLASFuncComplexReplInfo>
-      LegacyBLASFuncReplInfoMap;
-
-  // This map is only used for non-usm.
-  static const std::map<std::string, std::map<int, std::string>>
-      MaySyncBLASFuncWithMultiArgs;
-
-  static std::map<std::string, MapNames::BLASGemmExTypeInfo>
-      BLASTGemmExTypeInfoMap;
 
   static const MapTy DriverEnumsMap;
 
@@ -136,8 +103,6 @@ public:
 
   static const std::map<std::string, std::vector<unsigned int>>
       FFTPlanAPINeedParenIdxMap;
-
-  static MapTy BLASAPIWithRewriter;
 
   static const std::unordered_set<std::string> CooperativeGroupsAPISet;
 
