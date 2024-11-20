@@ -15,6 +15,7 @@
 #include "RuleInfra/MemberExprRewriter.h"
 #include "RuleInfra/TypeLocRewriters.h"
 #include "RulesDNN/DNNAPIMigration.h"
+#include "RulesDNN/MapNamesDNN.h"
 #include "RulesLang/RulesLang.h"
 #include "RulesLangLib/CUBAPIMigration.h"
 #include "RulesMathLib/MapNamesBlas.h"
@@ -1212,8 +1213,8 @@ void ExprAnalysis::analyzeType(TypeLoc TL, const Expr *CSCE,
     HelperFeatureSet.insert(Iter->second->RequestFeature);
     requestHelperFeatureForTypeNames(TyName);
   } else {
-    Iter = MapNames::CuDNNTypeNamesMap.find(TyName);
-    if (Iter != MapNames::CuDNNTypeNamesMap.end()) {
+    Iter = MapNamesDNN::CuDNNTypeNamesMap.find(TyName);
+    if (Iter != MapNamesDNN::CuDNNTypeNamesMap.end()) {
       HelperFeatureSet.insert(Iter->second->RequestFeature);
       requestHelperFeatureForTypeNames(TyName);
     }
@@ -1222,7 +1223,7 @@ void ExprAnalysis::analyzeType(TypeLoc TL, const Expr *CSCE,
   auto Range = getDefinitionRange(SR.getBegin(), SR.getEnd());
   if (MapNames::replaceName(MapNames::TypeNamesMap, TyName)) {
     addReplacement(Range.getBegin(), Range.getEnd(), CSCE, TyName);
-  } else if (MapNames::replaceName(MapNames::CuDNNTypeNamesMap, TyName)) {
+  } else if (MapNames::replaceName(MapNamesDNN::CuDNNTypeNamesMap, TyName)) {
     addReplacement(Range.getBegin(), Range.getEnd(), CSCE, TyName);
   } else if (getFinalCastTypeNameStr(TyName) != TyName) {
     addReplacement(Range.getBegin(), Range.getEnd(), CSCE,

@@ -27,6 +27,7 @@
 #include "RuleInfra/CallExprRewriter.h"
 #include "RuleInfra/MemberExprRewriter.h"
 #include "RuleInfra/TypeLocRewriters.h"
+#include "RulesDNN/MapNamesDNN.h"
 #include "RulesMathLib/MapNamesBlas.h"
 #include "UserDefinedRules/PatternRewriter.h"
 #include "UserDefinedRules/UserDefinedRules.h"
@@ -1144,6 +1145,7 @@ int runDPCT(int argc, const char **argv) {
   }
   MapNames::setExplicitNamespaceMap(ExplicitNamespaces);
   MapNamesBlas::setExplicitNamespaceMap(ExplicitNamespaces);
+  MapNamesDNN::setExplicitNamespaceMap(ExplicitNamespaces);
 
   // Init migration rules infrasturecture.
   CallExprRewriterFactoryBase::initRewriterMap();

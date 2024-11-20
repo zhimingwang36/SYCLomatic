@@ -8,14 +8,14 @@
 
 #include "Utility.h"
 #include "ASTTraversal.h"
-#include "RuleInfra/MapNames.h"
 #include "AnalysisInfo.h"
 #include "Config.h"
-#include "RulesDNN/DNNAPIMigration.h"
-#include "RuleInfra/ExprAnalysis.h"
-#include "RuleInfra/MapNames.h"
 #include "FileGenerator/GenFiles.h"
 #include "MigrationReport/Statics.h"
+#include "RuleInfra/ExprAnalysis.h"
+#include "RuleInfra/MapNames.h"
+#include "RulesDNN/DNNAPIMigration.h"
+#include "RulesDNN/MapNamesDNN.h"
 #include "clang/AST/ASTContext.h"
 #include "clang/AST/ASTTypeTraits.h"
 #include "clang/AST/Expr.h"
@@ -4821,8 +4821,8 @@ void requestHelperFeatureForTypeNames(const std::string Name) {
     requestFeature(HelperFeatureIter->second->RequestFeature);
     return;
   }
-  auto CuDNNHelperFeatureIter = MapNames::CuDNNTypeNamesMap.find(Name);
-  if (CuDNNHelperFeatureIter != MapNames::CuDNNTypeNamesMap.end()) {
+  auto CuDNNHelperFeatureIter = MapNamesDNN::CuDNNTypeNamesMap.find(Name);
+  if (CuDNNHelperFeatureIter != MapNamesDNN::CuDNNTypeNamesMap.end()) {
     requestFeature(CuDNNHelperFeatureIter->second->RequestFeature);
   }
 }

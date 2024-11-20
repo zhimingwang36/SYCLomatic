@@ -181,6 +181,7 @@ add_clang_library(DPCT
   RuleInfra/MapNames.cpp
   RulesMathLib/MapNamesSolver.cpp
   RulesMathLib/MapNamesBlas.cpp
+  RulesDNN/MapNamesDNN.cpp
   FileGenerator/GenFiles.cpp
   DPCT.cpp
   CommandOption/DpctOptions.cpp
