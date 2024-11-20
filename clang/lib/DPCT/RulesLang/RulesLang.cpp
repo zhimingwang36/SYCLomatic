@@ -23,6 +23,7 @@
 #include "RulesDNN/DNNAPIMigration.h"
 #include "RulesLang/BarrierFenceSpaceAnalyzer.h"
 #include "RulesLang/GroupFunctionAnalyzer.h"
+#include "RulesLang/MapNamesLang.h"
 #include "RulesLang/OptimizeMigration.h"
 #include "RulesLang/WMMAAPIMigration.h"
 #include "RulesLangLib/LIBCUAPIMigration.h"
@@ -82,8 +83,8 @@ static const CXXConstructorDecl *getIfConstructorDecl(const Decl *ND) {
 }
 
 static internal::Matcher<NamedDecl> vectorTypeName() {
-  std::vector<std::string> TypeNames(MapNames::SupportedVectorTypes.begin(),
-                                     MapNames::SupportedVectorTypes.end());
+  std::vector<std::string> TypeNames(MapNamesLang::SupportedVectorTypes.begin(),
+                                     MapNamesLang::SupportedVectorTypes.end());
   return internal::Matcher<NamedDecl>(new internal::HasNameMatcher(TypeNames));
 }
 
@@ -685,10 +686,11 @@ void ErrorHandlingHostAPIRule::insertTryCatch(const FunctionDecl *FD) {
 
 
 void AtomicFunctionRule::registerMatcher(MatchFinder &MF) {
-  std::vector<std::string> AtomicFuncNames(MapNames::AtomicFuncNamesMap.size());
+  std::vector<std::string> AtomicFuncNames(
+      MapNamesLang::AtomicFuncNamesMap.size());
   std::transform(
-      MapNames::AtomicFuncNamesMap.begin(), MapNames::AtomicFuncNamesMap.end(),
-      AtomicFuncNames.begin(),
+      MapNamesLang::AtomicFuncNamesMap.begin(),
+      MapNamesLang::AtomicFuncNamesMap.end(), AtomicFuncNames.begin(),
       [](const std::pair<std::string, std::string> &p) { return p.first; });
 
   auto hasAnyAtomicFuncName = [&]() {
@@ -2047,8 +2049,8 @@ AST_MATCHER(FunctionDecl, overloadedVectorOperator) {
       return false;
 
     const std::string TypeName = IDInfo->getName().str();
-    if (MapNames::SupportedVectorTypes.find(TypeName) !=
-        MapNames::SupportedVectorTypes.end()) {
+    if (MapNamesLang::SupportedVectorTypes.find(TypeName) !=
+        MapNamesLang::SupportedVectorTypes.end()) {
       if (const auto *ND = getNamedDecl(PD->getType().getTypePtr())) {
         auto Loc = ND->getBeginLoc();
         if (DpctGlobalInfo::isInAnalysisScope(Loc))
@@ -6758,8 +6760,8 @@ void MemoryMigrationRule::mallocMigration(
     if (!C->getArg(3)->isValueDependent() &&
         C->getArg(3)->EvaluateAsInt(ER, *Result.Context)) {
       int64_t Value = ER.Val.getInt().getExtValue();
-      const auto &ImageTypePair = MapNames::ArrayFlagMap.find(Value);
-      if (ImageTypePair != MapNames::ArrayFlagMap.end())
+      const auto &ImageTypePair = MapNamesLang::ArrayFlagMap.find(Value);
+      if (ImageTypePair != MapNamesLang::ArrayFlagMap.end())
         ImageType = "image_type::" + ImageTypePair->second;
     }
     if (DpctGlobalInfo::useExtBindlessImages()) {
@@ -8180,8 +8182,8 @@ void MemoryDataTypeRule::runRule(const MatchFinder::MatchResult &Result) {
         DpctGlobalInfo::getUnqualifiedTypeName(M->getBase()->getType());
     auto MemberName = M->getMemberDecl()->getName();
     if (BaseName == "cudaPos") {
-      auto &Replace = MapNames::findReplacedName(MapNames::Dim3MemberNamesMap,
-                                                 MemberName.str());
+      auto &Replace = MapNames::findReplacedName(
+          MapNamesLang::Dim3MemberNamesMap, MemberName.str());
       if (!Replace.empty())
         emplaceTransformation(new ReplaceToken(
             M->getOperatorLoc(), M->getEndLoc(), std::string(Replace)));
@@ -8617,8 +8619,8 @@ void WarpFunctionsRule::runRule(const MatchFinder::MatchResult &Result) {
 
 void CooperativeGroupsFunctionRule::registerMatcher(MatchFinder &MF) {
   std::vector<std::string> CGAPI;
-  CGAPI.insert(CGAPI.end(), MapNames::CooperativeGroupsAPISet.begin(),
-               MapNames::CooperativeGroupsAPISet.end());
+  CGAPI.insert(CGAPI.end(), MapNamesLang::CooperativeGroupsAPISet.begin(),
+               MapNamesLang::CooperativeGroupsAPISet.end());
   MF.addMatcher(
       callExpr(
           allOf(callee(functionDecl(
@@ -9869,13 +9871,14 @@ void TextureRule::replaceTextureMember(const MemberExpr *ME,
     if (MethodName.empty()) {
       requestFeature(HelperFeatureEnum::device_ext);
     } else {
-      if (MapNames::SamplingInfoToSetFeatureMap.count(MethodName.str())) {
+      if (MapNamesLang::SamplingInfoToSetFeatureMap.count(MethodName.str())) {
         requestFeature(
-            MapNames::SamplingInfoToSetFeatureMap.at(MethodName.str()));
+            MapNamesLang::SamplingInfoToSetFeatureMap.at(MethodName.str()));
       }
-      if (MapNames::ImageWrapperBaseToSetFeatureMap.count(MethodName.str())) {
+      if (MapNamesLang::ImageWrapperBaseToSetFeatureMap.count(
+              MethodName.str())) {
         requestFeature(
-            MapNames::ImageWrapperBaseToSetFeatureMap.at(MethodName.str()));
+            MapNamesLang::ImageWrapperBaseToSetFeatureMap.at(MethodName.str()));
       }
     }
     emplaceTransformation(ReplaceMemberAssignAsSetMethod(
@@ -9888,11 +9891,12 @@ void TextureRule::replaceTextureMember(const MemberExpr *ME,
     } else {
       emplaceTransformation(new RenameFieldInMemberExpr(
           ME, buildString("get_", ReplField, "()")));
-      if (MapNames::SamplingInfoToGetFeatureMap.count(ReplField)) {
-        requestFeature(MapNames::SamplingInfoToGetFeatureMap.at(ReplField));
+      if (MapNamesLang::SamplingInfoToGetFeatureMap.count(ReplField)) {
+        requestFeature(MapNamesLang::SamplingInfoToGetFeatureMap.at(ReplField));
       }
-      if (MapNames::ImageWrapperBaseToGetFeatureMap.count(ReplField)) {
-        requestFeature(MapNames::ImageWrapperBaseToGetFeatureMap.at(ReplField));
+      if (MapNamesLang::ImageWrapperBaseToGetFeatureMap.count(ReplField)) {
+        requestFeature(
+            MapNamesLang::ImageWrapperBaseToGetFeatureMap.at(ReplField));
       }
     }
   }

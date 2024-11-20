@@ -9,6 +9,7 @@
 #include "AnalysisInfo.h"
 #include "Diagnostics/Diagnostics.h"
 #include "FileGenerator/GenFiles.h"
+#include "RulesLang/MapNamesLang.h"
 #include "RulesLangLib/MapNamesLangLib.h"
 #include "TextModification.h"
 #include "Utility.h"
@@ -219,17 +220,17 @@ void IncludesCallbacks::MacroDefined(const Token &MacroNameTok,
 #endif
     }
 
-    if (MapNames::AtomicFuncNamesMap.find(II->getName().str()) !=
-        MapNames::AtomicFuncNamesMap.end()) {
+    if (MapNamesLang::AtomicFuncNamesMap.find(II->getName().str()) !=
+        MapNamesLang::AtomicFuncNamesMap.end()) {
       std::string HashStr =
           getHashStrFromLoc(MI->getReplacementToken(0).getLocation());
       DpctGlobalInfo::getInstance().insertAtomicInfo(
           HashStr, MacroNameTok.getLocation(), II->getName().str());
     } else if (MacroNameTok.getLocation().isValid() &&
                MacroNameTok.getIdentifierInfo() &&
-               MapNames::VectorTypeMigratedTypeSizeMap.find(
+               MapNamesLang::VectorTypeMigratedTypeSizeMap.find(
                    MacroNameTok.getIdentifierInfo()->getName().str()) !=
-                   MapNames::VectorTypeMigratedTypeSizeMap.end()) {
+                   MapNamesLang::VectorTypeMigratedTypeSizeMap.end()) {
       DiagnosticsUtils::report(
           MacroNameTok.getLocation(), Diagnostics::MACRO_SAME_AS_SYCL_TYPE,
           &TransformSet, false,
@@ -492,8 +493,8 @@ void IncludesCallbacks::MacroExpands(const Token &MacroNameTok,
 #endif
   }
 
-  auto Iter = MapNames::HostAllocSet.find(Name.str());
-  if (TKind == tok::identifier && Iter != MapNames::HostAllocSet.end()) {
+  auto Iter = MapNamesLang::HostAllocSet.find(Name.str());
+  if (TKind == tok::identifier && Iter != MapNamesLang::HostAllocSet.end()) {
     if (MI->getNumTokens() == 1) {
       auto ReplToken = MI->getReplacementToken(0);
       if (ReplToken.getKind() == tok::numeric_constant) {

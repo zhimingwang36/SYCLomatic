@@ -4311,10 +4311,10 @@ bool isExprUsed(const clang::Expr *E, bool &Result) {
 }
 
 std::string getRemovedAPIWarningMessage(std::string FuncName) {
-    auto Msg = MapNames::RemovedAPIWarningMessage.find(FuncName);
-    if (Msg != MapNames::RemovedAPIWarningMessage.end()) {
-      return Msg->second;
-    }
+  auto Msg = MapNames::RemovedAPIWarningMessage.find(FuncName);
+  if (Msg != MapNames::RemovedAPIWarningMessage.end()) {
+    return Msg->second;
+  }
     return "";
 }
 

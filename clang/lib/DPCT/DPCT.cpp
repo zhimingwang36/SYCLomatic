@@ -28,6 +28,7 @@
 #include "RuleInfra/MemberExprRewriter.h"
 #include "RuleInfra/TypeLocRewriters.h"
 #include "RulesDNN/MapNamesDNN.h"
+#include "RulesLang/MapNamesLang.h"
 #include "RulesLangLib/MapNamesLangLib.h"
 #include "RulesMathLib/MapNamesBlas.h"
 #include "RulesMathLib/MapNamesRandom.h"
@@ -1146,6 +1147,7 @@ int runDPCT(int argc, const char **argv) {
                                ExplicitNamespace::EN_SYCL});
   }
   MapNames::setExplicitNamespaceMap(ExplicitNamespaces);
+  MapNamesLang::setExplicitNamespaceMap(ExplicitNamespaces);
   MapNamesBlas::setExplicitNamespaceMap(ExplicitNamespaces);
   MapNamesDNN::setExplicitNamespaceMap(ExplicitNamespaces);
   MapNamesLangLib::setExplicitNamespaceMap(ExplicitNamespaces);
