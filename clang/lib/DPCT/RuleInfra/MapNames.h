@@ -159,19 +159,6 @@ public:
       CustomHelperFunctionMap;
 };
 
-class MigrationStatistics {
-private:
-  static std::map<std::string /*API Name*/, bool /*Is Migrated*/>
-      MigrationTable;
-  static std::map<std::string /*Type Name*/, bool /*Is Migrated*/>
-      TypeMigrationTable;
-
-public:
-  static bool IsMigrated(const std::string &APIName);
-  static std::vector<std::string> GetAllAPINames(void);
-  static std::map<std::string, bool> &GetTypeTable(void);
-};
-
 } // namespace dpct
 } // namespace clang
 #endif
