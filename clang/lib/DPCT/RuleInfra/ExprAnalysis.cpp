@@ -18,6 +18,7 @@
 #include "RulesDNN/MapNamesDNN.h"
 #include "RulesLang/RulesLang.h"
 #include "RulesLangLib/CUBAPIMigration.h"
+#include "RulesLangLib/MapNamesLangLib.h"
 #include "RulesMathLib/MapNamesBlas.h"
 #include "RulesMathLib/MapNamesSolver.h"
 #include "clang/AST/DeclTemplate.h"
@@ -607,7 +608,7 @@ void ExprAnalysis::analyzeExpr(const DeclRefExpr *DRE) {
       REPLACE_ENUM(MapNames::RandomOrderingTypeMap);
       REPLACE_ENUM(MapNamesSolver::SOLVEREnumsMap);
       REPLACE_ENUM(MapNamesBlas::SPBLASEnumsMap);
-      REPLACE_ENUM(MapNames::CUBEnumsMap);
+      REPLACE_ENUM(MapNamesLangLib::CUBEnumsMap);
 #undef REPLACE_ENUM
       std::string TypeName = DpctGlobalInfo::getTypeName(ECD->getType());
       if (TypeName == "cublasStatus_t" || TypeName == "cusparseStatus_t" ||

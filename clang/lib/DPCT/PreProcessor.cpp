@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
-#include "AnalysisInfo.h"
 #include "PreProcessor.h"
+#include "AnalysisInfo.h"
+#include "Diagnostics/Diagnostics.h"
 #include "FileGenerator/GenFiles.h"
+#include "RulesLangLib/MapNamesLangLib.h"
 #include "TextModification.h"
 #include "Utility.h"
-#include "Diagnostics/Diagnostics.h"
-#include "clang/DPCT/DpctOptions.h"
 #include "clang/AST/Decl.h"
 #include "clang/AST/Expr.h"
 #include "clang/AST/ExprCXX.h"
@@ -22,6 +22,7 @@
 #include "clang/Analysis/CallGraph.h"
 #include "clang/Basic/Cuda.h"
 #include "clang/Basic/SourceLocation.h"
+#include "clang/DPCT/DpctOptions.h"
 #include "clang/Lex/MacroArgs.h"
 #include <string>
 #include <tuple>
@@ -788,7 +789,8 @@ void IncludesCallbacks::Elif(SourceLocation Loc, SourceRange ConditionRange,
 bool IncludesCallbacks::ShouldEnter(StringRef FileName, bool IsAngled) {
 #ifdef _WIN32
   std::string Name = FileName.str();
-  return !IsAngled || !MapNames::isInSet(MapNames::ThrustFileExcludeSet, Name);
+  return !IsAngled ||
+         !MapNames::isInSet(MapNamesLangLib::ThrustFileExcludeSet, Name);
 #else
   return true;
 #endif

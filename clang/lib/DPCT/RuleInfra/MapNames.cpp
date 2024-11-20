@@ -47,15 +47,11 @@ MapNames::MapTy MapNames::DeviceRandomGeneratorTypeMap;
 std::unordered_map<std::string, std::shared_ptr<EnumNameRule>>
     MapNames::EnumNamesMap;
 
-MapNames::ThrustMapTy MapNames::ThrustFuncNamesMap;
-std::map<std::string /*Original API*/, HelperFeatureEnum>
-    MapNames::ThrustFuncNamesHelperFeaturesMap;
 std::unordered_map<std::string, std::string> MapNames::AtomicFuncNamesMap;
 MapNames::MapTy MapNames::ITFName;
 
 std::unordered_map<std::string, std::pair<std::string, std::string>>
     MapNames::MathTypeCastingMap;
-MapNames::MapTy MapNames::CUBEnumsMap;
 
 namespace {
 auto EnumBit = [](auto EnumValue) {
@@ -1544,42 +1540,7 @@ void MapNames::setExplicitNamespaceMap(
       // ...
   };
 
-  // CUB enums mapping
-  // clang-format off
-  CUBEnumsMap = {
-    {"BLOCK_STORE_DIRECT", getDpctNamespace() + "group::group_store_algorithm::blocked"},
-    {"BLOCK_STORE_STRIPED", getDpctNamespace() + "group::group_store_algorithm::striped"},
-    {"BLOCK_LOAD_DIRECT", getDpctNamespace() + "group::group_load_algorithm::blocked"},
-    {"BLOCK_LOAD_STRIPED", getDpctNamespace() + "group::group_load_algorithm::striped"}
-  };
-  // clang-format on
-
   ClassFieldMap = {};
-
-  // Thrust function name mapping
-  ThrustFuncNamesMap = {
-#define ENTRY(from, to, policy) {from, {to, policy}},
-#define ENTRY_HOST(from, to, policy) ENTRY(from, to, policy)
-#define ENTRY_DEVICE(from, to, policy) ENTRY(from, to, policy)
-#define ENTRY_BOTH(from, to, policy) ENTRY(from, to, policy)
-#include "RulesLangLib/APINamesMapThrust.inc"
-#undef ENTRY
-#undef ENTRY_HOST
-#undef ENTRY_DEVICE
-#undef ENTRY_BOTH
-  };
-
-  ThrustFuncNamesHelperFeaturesMap = {
-      {"thrust::sequence", HelperFeatureEnum::device_ext},
-      {"thrust::stable_sort_by_key", HelperFeatureEnum::device_ext},
-      {"thrust::transform_if", HelperFeatureEnum::device_ext},
-      {"thrust::device_free", HelperFeatureEnum::device_ext},
-      {"thrust::device_malloc", HelperFeatureEnum::device_ext},
-      {"thrust::raw_pointer_cast", HelperFeatureEnum::device_ext},
-      {"thrust::make_counting_iterator", HelperFeatureEnum::device_ext},
-      {"thrust::device_pointer_cast", HelperFeatureEnum::device_ext},
-      {"thrust::make_constant_iterator", HelperFeatureEnum::device_ext},
-      {"thrust::partition_point", HelperFeatureEnum::device_ext}};
 
   ITFName = {
 #define ENTRY(INTERFACENAME, APINAME, VALUE, FLAG, TARGET, COMMENT)            \
@@ -1732,20 +1693,6 @@ const std::map<unsigned, std::string> MapNames::ArrayFlagMap{
 std::unordered_map<std::string, MacroMigrationRule> MapNames::MacroRuleMap;
 
 std::unordered_map<std::string, MetaRuleObject &> MapNames::HeaderRuleMap{};
-
-// Files to not preprocess, i.e. ignore #include <file>
-const MapNames::SetTy MapNames::ThrustFileExcludeSet{
-    "thrust/detail/adjacent_difference.inl",
-    "thrust/detail/binary_search.inl",
-    "thrust/detail/complex/complex.inl",
-    "thrust/detail/copy_if.h",
-    "thrust/detail/count.inl",
-    "thrust/detail/equal.inl",
-    "thrust/detail/pair.inl",
-    "thrust/detail/pointer.inl",
-    "thrust/detail/sequence.inl",
-    "thrust/detail/sort.inl",
-    "thrust/detail/temporary_buffer.h"};
 
 // Texture names mapping.
 const MapNames::MapTy TextureRule::TextureMemberNames{
