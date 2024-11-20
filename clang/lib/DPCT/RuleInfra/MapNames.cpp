@@ -40,9 +40,6 @@ std::unordered_map<std::string, std::shared_ptr<TypeNameRule>>
     MapNames::TypeNamesMap;
 std::unordered_map<std::string, std::shared_ptr<ClassFieldRule>>
     MapNames::ClassFieldMap;
-MapNames::MapTy MapNames::RandomEngineTypeMap;
-MapNames::MapTy MapNames::RandomOrderingTypeMap;
-MapNames::MapTy MapNames::DeviceRandomGeneratorTypeMap;
 
 std::unordered_map<std::string, std::shared_ptr<EnumNameRule>>
     MapNames::EnumNamesMap;
@@ -893,75 +890,6 @@ void MapNames::setExplicitNamespaceMap(
       TypeNamesMap.erase(Type);
   }
 
-  // Host Random Engine Type mapping
-  RandomEngineTypeMap = {
-      {"CURAND_RNG_PSEUDO_DEFAULT",
-       getLibraryHelperNamespace() + "rng::random_engine_type::mcg59"},
-      {"CURAND_RNG_PSEUDO_XORWOW",
-       getLibraryHelperNamespace() + "rng::random_engine_type::mcg59"},
-      {"CURAND_RNG_PSEUDO_MRG32K3A",
-       getLibraryHelperNamespace() + "rng::random_engine_type::mrg32k3a"},
-      {"CURAND_RNG_PSEUDO_MTGP32",
-       getLibraryHelperNamespace() + "rng::random_engine_type::mt2203"},
-      {"CURAND_RNG_PSEUDO_MT19937",
-       getLibraryHelperNamespace() + "rng::random_engine_type::mt19937"},
-      {"CURAND_RNG_PSEUDO_PHILOX4_32_10",
-       getLibraryHelperNamespace() + "rng::random_engine_type::philox4x32x10"},
-      {"CURAND_RNG_QUASI_DEFAULT",
-       getLibraryHelperNamespace() + "rng::random_engine_type::sobol"},
-      {"CURAND_RNG_QUASI_SOBOL32",
-       getLibraryHelperNamespace() + "rng::random_engine_type::sobol"},
-      {"CURAND_RNG_QUASI_SCRAMBLED_SOBOL32",
-       getLibraryHelperNamespace() + "rng::random_engine_type::sobol"},
-      {"CURAND_RNG_QUASI_SOBOL64",
-       getLibraryHelperNamespace() + "rng::random_engine_type::sobol"},
-      {"CURAND_RNG_QUASI_SCRAMBLED_SOBOL64",
-       getLibraryHelperNamespace() + "rng::random_engine_type::sobol"},
-  };
-
-  // Random Ordering Type mapping
-  RandomOrderingTypeMap = {
-      {"CURAND_ORDERING_PSEUDO_DEFAULT",
-       getLibraryHelperNamespace() + "rng::random_mode::best"},
-      {"CURAND_ORDERING_PSEUDO_BEST",
-       getLibraryHelperNamespace() + "rng::random_mode::best"},
-      // CURAND_ORDERING_PSEUDO_SEEDED not support now.
-      {"CURAND_ORDERING_PSEUDO_LEGACY",
-       getLibraryHelperNamespace() + "rng::random_mode::legacy"},
-      {"CURAND_ORDERING_PSEUDO_DYNAMIC",
-       getLibraryHelperNamespace() + "rng::random_mode::optimal"},
-      // CURAND_ORDERING_QUASI_DEFAULT not support now.
-  };
-
-  // Device Random Generator Type mapping
-  DeviceRandomGeneratorTypeMap = {
-      {"curandStateXORWOW_t", getLibraryHelperNamespace() +
-                                  "rng::device::rng_generator<oneapi::"
-                                  "mkl::rng::device::mcg59<1>>"},
-      {"curandStateXORWOW", getLibraryHelperNamespace() +
-                                "rng::device::rng_generator<oneapi::"
-                                "mkl::rng::device::mcg59<1>>"},
-      {"curandState_t", getLibraryHelperNamespace() +
-                            "rng::device::rng_generator<oneapi::mkl::"
-                            "rng::device::mcg59<1>>"},
-      {"curandState", getLibraryHelperNamespace() +
-                          "rng::device::rng_generator<oneapi::mkl::"
-                          "rng::device::mcg59<1>>"},
-      {"curandStatePhilox4_32_10_t",
-       getLibraryHelperNamespace() +
-           "rng::device::rng_generator<oneapi::mkl::rng::device::"
-           "philox4x32x10<1>>"},
-      {"curandStatePhilox4_32_10",
-       getLibraryHelperNamespace() + "rng::device::rng_generator<"
-                            "oneapi::mkl::rng::device::philox4x32x10<1>>"},
-      {"curandStateMRG32k3a_t", getLibraryHelperNamespace() +
-                                    "rng::device::rng_generator<"
-                                    "oneapi::mkl::rng::device::mrg32k3a<1>>"},
-      {"curandStateMRG32k3a", getLibraryHelperNamespace() +
-                                  "rng::device::rng_generator<oneapi::"
-                                  "mkl::rng::device::mrg32k3a<1>>"},
-  };
-
   // Enum constants name mapping.
   MapNames::EnumNamesMap = {
       // ...
@@ -1655,30 +1583,6 @@ const MapNames::MapTy MapNames::RemovedAPIWarningMessage{
 #include "APINames_removed.inc"
 #undef ENTRY
 };
-
-const std::map<std::string, std::string> MapNames::RandomGenerateFuncMap{
-    {"curandGenerate", {"generate_uniform_bits"}},
-    {"curandGenerateLongLong", {"generate_uniform_bits"}},
-    {"curandGenerateLogNormal", {"generate_lognormal"}},
-    {"curandGenerateLogNormalDouble", {"generate_lognormal"}},
-    {"curandGenerateNormal", {"generate_gaussian"}},
-    {"curandGenerateNormalDouble", {"generate_gaussian"}},
-    {"curandGeneratePoisson", {"generate_poisson"}},
-    {"curandGenerateUniform", {"generate_uniform"}},
-    {"curandGenerateUniformDouble", {"generate_uniform"}},
-};
-
-const std::map<std::string, std::vector<unsigned int>>
-    MapNames::FFTPlanAPINeedParenIdxMap{
-        {"cufftPlan1d", {1}},
-        {"cufftPlan2d", {1, 2}},
-        {"cufftPlan3d", {1, 2, 3}},
-        {"cufftPlanMany", {2, 3, 4, 6, 7}},
-        {"cufftMakePlan1d", {1}},
-        {"cufftMakePlan2d", {1, 2}},
-        {"cufftMakePlan3d", {1, 2, 3}},
-        {"cufftMakePlanMany", {2, 3, 4, 6, 7}},
-        {"cufftMakePlanMany64", {2, 3, 4, 6, 7}}};
 
 const MapNames::MapTy MapNames::Dim3MemberNamesMap{
     {"x", "[2]"}, {"y", "[1]"}, {"z", "[0]"},

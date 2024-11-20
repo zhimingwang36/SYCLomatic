@@ -82,14 +82,6 @@ public:
   static const MapTy DriverEnumsMap;
 
   static MapTy ITFName;
-  static MapTy RandomEngineTypeMap;
-  static MapTy RandomOrderingTypeMap;
-  static const std::map<std::string, std::string> RandomGenerateFuncMap;
-
-  static MapTy DeviceRandomGeneratorTypeMap;
-
-  static const std::map<std::string, std::vector<unsigned int>>
-      FFTPlanAPINeedParenIdxMap;
 
   static const std::unordered_set<std::string> CooperativeGroupsAPISet;
 

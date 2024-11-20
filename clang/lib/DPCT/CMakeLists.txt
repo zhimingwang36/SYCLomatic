@@ -182,6 +182,7 @@ add_clang_library(DPCT
   RuleInfra/MigrationStatistics.cpp
   RulesMathLib/MapNamesSolver.cpp
   RulesMathLib/MapNamesBlas.cpp
+  RulesMathLib/MapNamesRandom.cpp
   RulesDNN/MapNamesDNN.cpp
   RulesLangLib/MapNamesLangLib.cpp
   FileGenerator/GenFiles.cpp

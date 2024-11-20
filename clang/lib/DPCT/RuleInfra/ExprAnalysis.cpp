@@ -20,6 +20,7 @@
 #include "RulesLangLib/CUBAPIMigration.h"
 #include "RulesLangLib/MapNamesLangLib.h"
 #include "RulesMathLib/MapNamesBlas.h"
+#include "RulesMathLib/MapNamesRandom.h"
 #include "RulesMathLib/MapNamesSolver.h"
 #include "clang/AST/DeclTemplate.h"
 #include "clang/AST/Expr.h"
@@ -604,8 +605,8 @@ void ExprAnalysis::analyzeExpr(const DeclRefExpr *DRE) {
       REPLACE_ENUM(MapNamesBlas::BLASEnumsMap);
       REPLACE_ENUM(MapNames::FunctionAttrMap);
       REPLACE_ENUM(CuDNNTypeRule::CuDNNEnumNamesMap);
-      REPLACE_ENUM(MapNames::RandomEngineTypeMap);
-      REPLACE_ENUM(MapNames::RandomOrderingTypeMap);
+      REPLACE_ENUM(MapNamesRandom::RandomEngineTypeMap);
+      REPLACE_ENUM(MapNamesRandom::RandomOrderingTypeMap);
       REPLACE_ENUM(MapNamesSolver::SOLVEREnumsMap);
       REPLACE_ENUM(MapNamesBlas::SPBLASEnumsMap);
       REPLACE_ENUM(MapNamesLangLib::CUBEnumsMap);

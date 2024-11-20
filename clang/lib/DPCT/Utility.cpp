@@ -16,6 +16,7 @@
 #include "RuleInfra/MapNames.h"
 #include "RulesDNN/DNNAPIMigration.h"
 #include "RulesDNN/MapNamesDNN.h"
+#include "RulesMathLib/MapNamesRandom.h"
 #include "clang/AST/ASTContext.h"
 #include "clang/AST/ASTTypeTraits.h"
 #include "clang/AST/Expr.h"
@@ -2378,7 +2379,7 @@ std::string getFinalCastTypeNameStr(std::string CastTypeName) {
            std::greater<size_t>>
       ReplaceLengthStringMap;
 
-  for (auto &Pair : MapNames::DeviceRandomGeneratorTypeMap) {
+  for (auto &Pair : MapNamesRandom::DeviceRandomGeneratorTypeMap) {
     std::string::size_type BeginLoc = CastTypeName.find(Pair.first);
     if (BeginLoc != std::string::npos) {
       ReplaceLengthStringMap.insert(std::make_pair(

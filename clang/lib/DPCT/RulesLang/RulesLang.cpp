@@ -28,6 +28,7 @@
 #include "RulesLangLib/LIBCUAPIMigration.h"
 #include "RulesLangLib/ThrustAPIMigration.h"
 #include "RulesMathLib/FFTAPIMigration.h"
+#include "RulesMathLib/MapNamesRandom.h"
 #include "RulesMathLib/SpBLASAPIMigration.h"
 #include "RulesSecurity/Homoglyph.h"
 #include "RulesSecurity/MisleadingBidirectional.h"
@@ -1596,8 +1597,8 @@ void TypeInDeclRule::runRule(const MatchFinder::MatchResult &Result) {
     insertHeaderForTypeRule(TypeStr, BeginLoc);
     requestHelperFeatureForTypeNames(TypeStr);
     if (Str.empty()) {
-      auto Itr = MapNames::DeviceRandomGeneratorTypeMap.find(TypeStr);
-      if (Itr != MapNames::DeviceRandomGeneratorTypeMap.end()) {
+      auto Itr = MapNamesRandom::DeviceRandomGeneratorTypeMap.find(TypeStr);
+      if (Itr != MapNamesRandom::DeviceRandomGeneratorTypeMap.end()) {
         if (TypeStr == "curandState_t" || TypeStr == "curandState" ||
             TypeStr == "curandStateXORWOW_t" ||
             TypeStr == "curandStateXORWOW") {

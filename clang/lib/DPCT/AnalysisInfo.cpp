@@ -8,9 +8,10 @@
 
 #include "AnalysisInfo.h"
 #include "Diagnostics/Diagnostics.h"
+#include "MigrationReport/Statics.h"
 #include "RuleInfra/ExprAnalysis.h"
 #include "RuleInfra/MapNames.h"
-#include "MigrationReport/Statics.h"
+#include "RulesMathLib/MapNamesRandom.h"
 #include "TextModification.h"
 #include "Utility.h"
 
@@ -5501,8 +5502,9 @@ KernelCallExpr::ArgInfo::ArgInfo(const ParmVarDecl *PVD,
     // replace the TypeString with the MKL generator type.
     std::string PointeeTypeStr =
         Arg->getType()->getPointeeType().getUnqualifiedType().getAsString();
-    auto Iter = MapNames::DeviceRandomGeneratorTypeMap.find(PointeeTypeStr);
-    if (Iter != MapNames::DeviceRandomGeneratorTypeMap.end()) {
+    auto Iter =
+        MapNamesRandom::DeviceRandomGeneratorTypeMap.find(PointeeTypeStr);
+    if (Iter != MapNamesRandom::DeviceRandomGeneratorTypeMap.end()) {
       // Here the "*" is not added in the TypeString, the "*" will be added
       // in function buildKernelArgsStmt
       TypeString = Iter->second;
