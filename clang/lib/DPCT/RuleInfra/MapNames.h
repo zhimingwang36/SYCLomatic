@@ -52,15 +52,11 @@ public:
   static std::unordered_set<std::string> SYCLcompatUnsupportTypes;
   static std::unordered_map<std::string, MacroMigrationRule> MacroRuleMap;
   static std::unordered_map<std::string, MetaRuleObject &> HeaderRuleMap;
-
   static MapTy ITFName;
-
   static const MapTy RemovedAPIWarningMessage;
-
   static std::vector<MetaRuleObject::PatternRewriter> PatternRewriters;
   static std::map<clang::dpct::HelperFuncCatalog, std::string>
       CustomHelperFunctionMap;
-
   static std::unordered_map<std::string, std::shared_ptr<ClassFieldRule>>
       ClassFieldMap;
 
