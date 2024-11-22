@@ -1,4 +1,4 @@
-//===--------------- RulesLangNoneAPI.cpp---------------------------------===//
+//===--------------- RulesLangNoneAPIAndType.cpp--------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -1327,6 +1327,253 @@ void CompatWithClangRule::runRule(
       auto Length = End.getRawEncoding() - Begin.getRawEncoding();
       emplaceTransformation(new ReplaceText(Begin, Length, ""));
     }
+  }
+}
+
+void IterationSpaceBuiltinRule::registerMatcher(MatchFinder &MF) {
+  MF.addMatcher(
+      memberExpr(hasObjectExpression(opaqueValueExpr(hasSourceExpression(
+                     declRefExpr(to(varDecl(hasAnyName("threadIdx", "blockDim",
+                                                       "blockIdx", "gridDim"))
+                                        .bind("varDecl")))
+                         .bind("declRefExpr")))),
+                 hasAncestor(functionDecl().bind("func")))
+          .bind("memberExpr"),
+      this);
+  MF.addMatcher(declRefExpr(to(varDecl(hasAnyName("warpSize")).bind("varDecl")))
+                    .bind("declRefExpr"),
+                this);
+
+  MF.addMatcher(declRefExpr(to(varDecl(hasAnyName("threadIdx", "blockDim",
+                                                  "blockIdx", "gridDim"))),
+                            hasAncestor(functionDecl().bind("funcDecl")))
+                    .bind("declRefExprUnTempFunc"),
+                this);
+}
+
+bool IterationSpaceBuiltinRule::renameBuiltinName(const DeclRefExpr *DRE,
+                                                  std::string &NewName) {
+  auto BuiltinName = DRE->getDecl()->getName();
+  if (BuiltinName == "threadIdx")
+    NewName = DpctGlobalInfo::getItem(DRE) + ".get_local_id(";
+  else if (BuiltinName == "blockDim")
+    NewName = DpctGlobalInfo::getItem(DRE) + ".get_local_range(";
+  else if (BuiltinName == "blockIdx")
+    NewName = DpctGlobalInfo::getItem(DRE) + ".get_group(";
+  else if (BuiltinName == "gridDim")
+    NewName = DpctGlobalInfo::getItem(DRE) + ".get_group_range(";
+  else if (BuiltinName == "warpSize")
+    NewName = DpctGlobalInfo::getSubGroup(DRE) + ".get_local_range().get(0)";
+  else {
+    llvm::dbgs() << "[" << getName()
+                 << "] Unexpected field name: " << BuiltinName;
+    return false;
+  }
+
+  return true;
+}
+void IterationSpaceBuiltinRule::runRule(
+    const MatchFinder::MatchResult &Result) {
+  auto &SM = DpctGlobalInfo::getSourceManager();
+  if (const DeclRefExpr *DRE =
+          getNodeAsType<DeclRefExpr>(Result, "declRefExprUnTempFunc")) {
+    // Take the case of instantiated template function for example:
+    // template <typename IndexType = int> __device__ void thread_id() {
+    //  auto tidx_template = static_cast<IndexType>(threadIdx.x);
+    //}
+    // On Linux platform, .x(MemberExpr, __cuda_builtin_threadIdx_t) in
+    // static_cast statement is not available in AST, while 'threadIdx' is
+    // available, so dpct migrates it by 'threadIdx' matcher to identify the
+    // SourceLocation of 'threadIdx', then look forward 2 tokens to check
+    // whether .x appears.
+    auto FD = getAssistNodeAsType<FunctionDecl>(Result, "funcDecl");
+    if (!FD)
+      return;
+    const auto Begin = SM.getSpellingLoc(DRE->getBeginLoc());
+    auto End = SM.getSpellingLoc(DRE->getEndLoc());
+    End = End.getLocWithOffset(
+        Lexer::MeasureTokenLength(End, *Result.SourceManager, LangOptions()));
+
+    const auto Type = DRE->getDecl()
+                          ->getType()
+                          .getCanonicalType()
+                          .getUnqualifiedType()
+                          .getAsString();
+
+    if (Type.find("__cuda_builtin") == std::string::npos)
+      return;
+
+    const auto Tok2Ptr = Lexer::findNextToken(End, SM, LangOptions());
+    if (!Tok2Ptr.has_value())
+      return;
+
+    const auto Tok2 = Tok2Ptr.value();
+    if (Tok2.getKind() == tok::raw_identifier) {
+      std::string TypeStr = Tok2.getRawIdentifier().str();
+      const char *StartPos = SM.getCharacterData(Begin);
+      const char *EndPos = SM.getCharacterData(Tok2.getEndLoc());
+      const auto TyLen = EndPos - StartPos;
+
+      if (TyLen <= 0)
+        return;
+
+      std::string Replacement;
+      if (!renameBuiltinName(DRE, Replacement))
+        return;
+
+      const auto FieldName = Tok2.getRawIdentifier().str();
+      unsigned Dimension;
+      auto DFI = DeviceFunctionDecl::LinkRedecls(FD);
+      if (!DFI)
+        return;
+
+      if (FieldName == "x") {
+        DpctGlobalInfo::getInstance().insertBuiltinVarInfo(Begin, TyLen,
+                                                           Replacement, DFI);
+        DpctGlobalInfo::updateSpellingLocDFIMaps(DRE->getBeginLoc(), DFI);
+        return;
+      } else if (FieldName == "y") {
+        Dimension = 1;
+        DFI->getVarMap().Dim = 3;
+      } else if (FieldName == "z") {
+        Dimension = 0;
+        DFI->getVarMap().Dim = 3;
+      } else
+        return;
+
+      Replacement += std::to_string(Dimension);
+      Replacement += ")";
+
+      emplaceTransformation(
+          new ReplaceText(Begin, TyLen, std::move(Replacement)));
+    }
+    return;
+  }
+
+  const MemberExpr *ME = getNodeAsType<MemberExpr>(Result, "memberExpr");
+  const VarDecl *VD = getAssistNodeAsType<VarDecl>(Result, "varDecl");
+  const DeclRefExpr *DRE = getNodeAsType<DeclRefExpr>(Result, "declRefExpr");
+  std::shared_ptr<DeviceFunctionInfo> DFI = nullptr;
+  if (!VD || !DRE) {
+    return;
+  }
+  bool IsME = false;
+  if (ME) {
+    auto FD = getAssistNodeAsType<FunctionDecl>(Result, "func");
+    if (!FD)
+      return;
+    DFI = DeviceFunctionDecl::LinkRedecls(FD);
+    if (!DFI)
+      return;
+    IsME = true;
+  } else {
+    std::string InFile = dpct::DpctGlobalInfo::getSourceManager()
+                             .getFilename(VD->getBeginLoc())
+                             .str();
+
+    if (!isChildOrSamePath(DpctInstallPath, InFile)) {
+      return;
+    }
+  }
+
+  std::string Replacement;
+  StringRef BuiltinName = VD->getName();
+  if (!renameBuiltinName(DRE, Replacement))
+    return;
+
+  if (IsME) {
+    ValueDecl *Field = ME->getMemberDecl();
+    StringRef FieldName = Field->getName();
+    unsigned Dimension;
+    if (FieldName == "__fetch_builtin_x") {
+      auto Range = getDefinitionRange(ME->getBeginLoc(), ME->getEndLoc());
+      SourceLocation Begin = Range.getBegin();
+      SourceLocation End = Range.getEnd();
+
+      End = End.getLocWithOffset(Lexer::MeasureTokenLength(
+          End, SM, DpctGlobalInfo::getContext().getLangOpts()));
+
+      unsigned int Len =
+          SM.getDecomposedLoc(End).second - SM.getDecomposedLoc(Begin).second;
+      DpctGlobalInfo::getInstance().insertBuiltinVarInfo(Begin, Len,
+                                                         Replacement, DFI);
+      DpctGlobalInfo::updateSpellingLocDFIMaps(ME->getBeginLoc(), DFI);
+      return;
+    } else if (FieldName == "__fetch_builtin_y") {
+      Dimension = 1;
+      DFI->getVarMap().Dim = 3;
+    } else if (FieldName == "__fetch_builtin_z") {
+      Dimension = 0;
+      DFI->getVarMap().Dim = 3;
+    } else {
+      llvm::dbgs() << "[" << getName()
+                   << "] Unexpected field name: " << FieldName;
+      return;
+    }
+
+    Replacement += std::to_string(Dimension);
+    Replacement += ")";
+  }
+  if (IsME) {
+    emplaceTransformation(new ReplaceStmt(ME, std::move(Replacement)));
+  } else {
+    auto isDefaultParmWarpSize = [=](const FunctionDecl *&FD,
+                                     const ParmVarDecl *&PVD) -> bool {
+      if (BuiltinName != "warpSize")
+        return false;
+      PVD = DpctGlobalInfo::findAncestor<ParmVarDecl>(DRE);
+      if (!PVD || !PVD->hasDefaultArg())
+        return false;
+      FD = dyn_cast_or_null<FunctionDecl>(PVD->getParentFunctionOrMethod());
+      if (!FD)
+        return false;
+      if (FD->hasAttr<CUDADeviceAttr>())
+        return true;
+      return false;
+    };
+
+    const ParmVarDecl *PVD = nullptr;
+    const FunctionDecl *FD = nullptr;
+    if (isDefaultParmWarpSize(FD, PVD)) {
+      SourceManager &SM = DpctGlobalInfo::getSourceManager();
+      bool IsConstQualified = PVD->getType().isConstQualified();
+      emplaceTransformation(new ReplaceStmt(DRE, "0"));
+      unsigned int Idx = PVD->getFunctionScopeIndex();
+
+      for (const auto FDIter : FD->redecls()) {
+        if (IsConstQualified) {
+          SourceRange SR;
+          const ParmVarDecl *CurrentPVD = FDIter->getParamDecl(Idx);
+          if (getTypeRange(CurrentPVD, SR)) {
+            auto Length =
+                SM.getFileOffset(SR.getEnd()) - SM.getFileOffset(SR.getBegin());
+            QualType NewType = CurrentPVD->getType();
+            NewType.removeLocalConst();
+            std::string NewTypeStr =
+                DpctGlobalInfo::getReplacedTypeName(NewType);
+            emplaceTransformation(
+                new ReplaceText(SR.getBegin(), Length, std::move(NewTypeStr)));
+          }
+        }
+
+        const Stmt *Body = FD->getBody();
+        if (!Body)
+          continue;
+        if (const CompoundStmt *BodyCS = dyn_cast<CompoundStmt>(Body)) {
+          if (BodyCS->child_begin() != BodyCS->child_end()) {
+            SourceLocation InsertLoc =
+                SM.getExpansionLoc((*(BodyCS->child_begin()))->getBeginLoc());
+            std::string IndentStr = getIndent(InsertLoc, SM).str();
+            std::string Text =
+                "if (!" + PVD->getName().str() + ") " + PVD->getName().str() +
+                " = " + DpctGlobalInfo::getSubGroup(BodyCS) +
+                ".get_local_range().get(0);" + getNL() + IndentStr;
+            emplaceTransformation(new InsertText(InsertLoc, std::move(Text)));
+          }
+        }
+      }
+    } else
+      emplaceTransformation(new ReplaceStmt(DRE, std::move(Replacement)));
   }
 }
 
