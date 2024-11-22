@@ -9,8 +9,6 @@
 #ifndef DPCT_RULESMATHLIB_MAPNAMES_RANDOM_H
 #define DPCT_RULESMATHLIB_MAPNAMES_RANDOM_H
 #include "CommandOption/ValidateArguments.h"
-#include "UserDefinedRules/UserDefinedRules.h"
-#include "Utility.h"
 #include <map>
 #include <set>
 

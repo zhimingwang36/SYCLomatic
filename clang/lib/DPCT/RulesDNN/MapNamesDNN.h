@@ -10,9 +10,11 @@
 #define DPCT_RULESDNN_MAPNAMES_DNN_H
 #include "CommandOption/ValidateArguments.h"
 #include "UserDefinedRules/UserDefinedRules.h"
-#include "Utility.h"
 #include <map>
+#include <memory>
 #include <set>
+#include <string>
+#include <unordered_map>
 
 namespace clang {
 namespace dpct {

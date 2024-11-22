@@ -9,9 +9,8 @@
 #ifndef DPCT_MAPNAMES_H
 #define DPCT_MAPNAMES_H
 
-#include "UserDefinedRules/UserDefinedRules.h"
-#include "Utility.h"
 #include "CommandOption/ValidateArguments.h"
+#include "UserDefinedRules/UserDefinedRules.h"
 #include <map>
 #include <set>
 

@@ -7,13 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "MapNamesBlas.h"
-#include "ASTTraversal.h"
-#include "FileGenerator/GenFiles.h"
-#include "RuleInfra/CallExprRewriter.h"
 #include "RuleInfra/MapNames.h"
-#include "RulesDNN/DNNAPIMigration.h"
-#include "RulesLang/RulesLang.h"
-#include <map>
 
 using namespace clang;
 using namespace clang::dpct;

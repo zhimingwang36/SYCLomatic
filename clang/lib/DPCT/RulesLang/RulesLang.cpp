@@ -11808,5 +11808,5 @@ void GraphicsInteropRule::runRule(
   EA.applyAllSubExprRepl();
 }
 
-} //namespace clang
 } //namespace dpct
+} // namespace clang
