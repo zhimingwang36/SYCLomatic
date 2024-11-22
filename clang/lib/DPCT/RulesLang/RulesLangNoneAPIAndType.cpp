@@ -7,17 +7,10 @@
 //===----------------------------------------------------------------------===//
 
 #include "AnalysisInfo.h"
-#include "RuleInfra/ASTmatcherCommon.h"
-#include "RuleInfra/CallExprRewriter.h"
 #include "RuleInfra/CallExprRewriterCommon.h"
 #include "RuleInfra/ExprAnalysis.h"
-#include "RuleInfra/MemberExprRewriter.h"
 #include "RuleInfra/MigrationStatistics.h"
 #include "RulesLang.h"
-#include "RulesLang/BarrierFenceSpaceAnalyzer.h"
-#include "RulesLang/GroupFunctionAnalyzer.h"
-#include "RulesLang/MapNamesLang.h"
-#include "RulesMathLib/MapNamesRandom.h"
 #include "TextModification.h"
 #include "Utility.h"
 #include "clang/AST/Decl.h"
@@ -32,19 +25,10 @@
 #include "clang/Basic/Cuda.h"
 #include "clang/Basic/SourceLocation.h"
 #include "clang/Lex/MacroArgs.h"
-#include "llvm/ADT/SCCIterator.h"
-#include "llvm/ADT/SmallString.h"
 #include "llvm/ADT/StringSet.h"
-#include "llvm/Support/Path.h"
 
-#include <algorithm>
-#include <iostream>
-#include <ostream>
 #include <regex>
-#include <sstream>
 #include <string>
-#include <tuple>
-#include <unordered_map>
 #include <utility>
 
 using namespace clang;

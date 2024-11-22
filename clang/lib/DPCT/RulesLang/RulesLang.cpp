@@ -34,13 +34,11 @@
 #include "clang/Lex/MacroArgs.h"
 #include "llvm/ADT/SCCIterator.h"
 #include "llvm/ADT/SmallString.h"
-#include "llvm/ADT/StringSet.h"
 #include "llvm/Support/Path.h"
 
 #include <algorithm>
 #include <iostream>
 #include <ostream>
-#include <regex>
 #include <sstream>
 #include <string>
 #include <tuple>
