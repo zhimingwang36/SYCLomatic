@@ -113,6 +113,9 @@ add_clang_library(DPCT
   PreProcessor.cpp
   AnalysisInfo.cpp
   RulesLang/RulesLang.cpp
+  RulesLang/RulesLangGraph.cpp
+  RulesLang/RulesLangGraphInterop.cpp
+  RulesLang/RulesLangNoneAPIAndType.cpp
   RulesLangLib/CUB/CallExprRewriterCUB.cpp
   RulesLangLib/CUB/RewriterClassMethods.cpp
   RulesLangLib/CUB/RewriterDeviceHistgram.cpp

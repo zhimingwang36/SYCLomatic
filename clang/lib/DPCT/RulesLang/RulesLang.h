@@ -25,6 +25,8 @@
 
 namespace clang {
 namespace dpct {
+// utils
+bool isAssignOperator(const Stmt *);
 
 /// Migration rule for iteration space built-in variables (threadIdx, etc).
 class IterationSpaceBuiltinRule
