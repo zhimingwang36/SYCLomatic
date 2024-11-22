@@ -507,93 +507,6 @@ void ErrorHandlingHostAPIRule::insertTryCatch(const FunctionDecl *FD) {
       new InsertAfterStmt(FD->getBody(), std::move(ReplaceStr)));
 }
 
-
-void AtomicFunctionRule::registerMatcher(MatchFinder &MF) {
-  std::vector<std::string> AtomicFuncNames(
-      MapNamesLang::AtomicFuncNamesMap.size());
-  std::transform(
-      MapNamesLang::AtomicFuncNamesMap.begin(),
-      MapNamesLang::AtomicFuncNamesMap.end(), AtomicFuncNames.begin(),
-      [](const std::pair<std::string, std::string> &p) { return p.first; });
-
-  auto hasAnyAtomicFuncName = [&]() {
-    return internal::Matcher<NamedDecl>(
-        new internal::HasNameMatcher(AtomicFuncNames));
-  };
-
-  // Support all integer type, float, double and half2
-  // Type half is not supported
-  auto supportedTypes = [&]() {
-    return anyOf(hasType(pointsTo(isInteger())),
-                 hasType(pointsTo(asString("float"))),
-                 hasType(pointsTo(asString("double"))),
-                 hasType(pointsTo(asString("__half2"))));
-  };
-
-  auto supportedAtomicFunctions = [&]() {
-    return allOf(hasAnyAtomicFuncName(), hasParameter(0, supportedTypes()));
-  };
-
-  auto unsupportedAtomicFunctions = [&]() {
-    return allOf(hasAnyAtomicFuncName(),
-                 unless(hasParameter(0, supportedTypes())));
-  };
-
-  MF.addMatcher(callExpr(callee(functionDecl(supportedAtomicFunctions())))
-                    .bind("supportedAtomicFuncCall"),
-                this);
-
-  MF.addMatcher(callExpr(callee(functionDecl(unsupportedAtomicFunctions())))
-                    .bind("unsupportedAtomicFuncCall"),
-                this);
-}
-
-void AtomicFunctionRule::ReportUnsupportedAtomicFunc(const CallExpr *CE) {
-  if (!CE)
-    return;
-
-  std::ostringstream OSS;
-  // Atomic functions with __half are not supported.
-  if (!CE->getDirectCallee())
-    return;
-  OSS << "half version of "
-      << MapNames::ITFName.at(CE->getDirectCallee()->getName().str());
-  report(CE->getBeginLoc(), Diagnostics::API_NOT_MIGRATED, false, OSS.str());
-}
-
-void AtomicFunctionRule::MigrateAtomicFunc(
-    const CallExpr *CE, const ast_matchers::MatchFinder::MatchResult &Result) {
-  if (!CE)
-    return;
-
-  // Don't migrate user defined function
-  if (auto *CalleeDecl = CE->getDirectCallee()) {
-    if (isUserDefinedDecl(CalleeDecl))
-      return;
-  } else {
-    return;
-  };
-
-  const std::string FuncName = CE->getDirectCallee()->getName().str();
-  if (!CallExprRewriterFactoryBase::RewriterMap)
-    return;
-  auto Iter = CallExprRewriterFactoryBase::RewriterMap->find(FuncName);
-  if (Iter != CallExprRewriterFactoryBase::RewriterMap->end()) {
-    ExprAnalysis EA(CE);
-    emplaceTransformation(EA.getReplacement());
-    EA.applyAllSubExprRepl();
-    return;
-  }
-}
-
-void AtomicFunctionRule::runRule(const MatchFinder::MatchResult &Result) {
-  ReportUnsupportedAtomicFunc(
-      getNodeAsType<CallExpr>(Result, "unsupportedAtomicFuncCall"));
-
-  MigrateAtomicFunc(getNodeAsType<CallExpr>(Result, "supportedAtomicFuncCall"),
-                    Result);
-}
-
 void MiscAPIRule::registerMatcher(MatchFinder &MF) {
   auto functionName = [&]() {
     return hasAnyName("cudaOccupancyMaxActiveBlocksPerMultiprocessor",
@@ -7085,9 +6998,10 @@ void MemoryMigrationRule::handleAsync(const CallExpr *C, unsigned i,
 
 
 const Expr *getRhs(const Stmt *);
-TextModification *ReplaceMemberAssignAsSetMethod(
-    SourceLocation EndLoc, const MemberExpr *ME, StringRef MethodName,
-    StringRef ReplacedArg, StringRef ExtraArg = "", StringRef ExtraFeild = "") {
+TextModification *
+ReplaceMemberAssignAsSetMethod(SourceLocation EndLoc, const MemberExpr *ME,
+                               StringRef MethodName, StringRef ReplacedArg,
+                               StringRef ExtraArg, StringRef ExtraFeild) {
   return new ReplaceToken(
       ME->getMemberLoc(), EndLoc,
       buildString(ExtraFeild + "set", MethodName.empty() ? "" : "_", MethodName,
@@ -7095,12 +7009,10 @@ TextModification *ReplaceMemberAssignAsSetMethod(
                   ")"));
 }
 
-TextModification *ReplaceMemberAssignAsSetMethod(const Expr *E,
-                                                 const MemberExpr *ME,
-                                                 StringRef MethodName,
-                                                 StringRef ReplacedArg = "",
-                                                 StringRef ExtraArg = "",
-                                                 StringRef ExtraFeild = "") {
+TextModification *
+ReplaceMemberAssignAsSetMethod(const Expr *E, const MemberExpr *ME,
+                               StringRef MethodName, StringRef ReplacedArg,
+                               StringRef ExtraArg, StringRef ExtraFeild) {
   if (ReplacedArg.empty()) {
     if (auto RHS = getRhs(E)) {
       return ReplaceMemberAssignAsSetMethod(
@@ -7529,133 +7441,6 @@ void WarpFunctionsRule::runRule(const MatchFinder::MatchResult &Result) {
   emplaceTransformation(EA.getReplacement());
   EA.applyAllSubExprRepl();
 }
-
-void CooperativeGroupsFunctionRule::registerMatcher(MatchFinder &MF) {
-  std::vector<std::string> CGAPI;
-  CGAPI.insert(CGAPI.end(), MapNamesLang::CooperativeGroupsAPISet.begin(),
-               MapNamesLang::CooperativeGroupsAPISet.end());
-  MF.addMatcher(
-      callExpr(
-          allOf(callee(functionDecl(
-                    internal::Matcher<NamedDecl>(
-                        new internal::HasNameMatcher(CGAPI)),
-                    hasAncestor(namespaceDecl(hasName("cooperative_groups"))))),
-                hasAncestor(functionDecl(anyOf(hasAttr(attr::CUDADevice),
-                                               hasAttr(attr::CUDAGlobal))))))
-          .bind("FuncCall"),
-      this);
-  MF.addMatcher(
-      declRefExpr(
-          hasAncestor(
-              implicitCastExpr(
-                  hasImplicitDestinationType(qualType(hasCanonicalType(
-                      recordType(hasDeclaration(cxxRecordDecl(hasName(
-                          "cooperative_groups::__v1::thread_group"))))))))))
-          .bind("declRef"),
-      this);
-}
-
-void CooperativeGroupsFunctionRule::runRule(
-    const MatchFinder::MatchResult &Result) {
-  const CallExpr *CE = getNodeAsType<CallExpr>(Result, "FuncCall");
-  const DeclRefExpr *DR = getNodeAsType<DeclRefExpr>(Result, "declRef");
-  const SourceManager &SM = DpctGlobalInfo::getSourceManager();
-  if (DR && DpctGlobalInfo::useLogicalGroup()) {
-    std::string ReplacedStr = MapNames::getDpctNamespace() + "experimental::group" +
-                  "(" + DR->getNameInfo().getAsString() + ", " +
-                  DpctGlobalInfo::getItem(DR) + ")";
-    SourceRange DefRange = getDefinitionRange(DR->getBeginLoc(),  DR->getEndLoc());
-    SourceLocation Begin = DefRange.getBegin();
-    SourceLocation End = DefRange.getEnd();
-    End = End.getLocWithOffset(Lexer::MeasureTokenLength(
-        End, SM, DpctGlobalInfo::getContext().getLangOpts()));
-    emplaceTransformation(replaceText(Begin, End, std::move(ReplacedStr),
-                                      DpctGlobalInfo::getSourceManager()));
-    return;
-  }
-  if (!CE)
-    return;
-  std::string FuncName =
-      CE->getDirectCallee()->getNameInfo().getName().getAsString();
-
-  struct ReportUnsupportedWarning {
-    ReportUnsupportedWarning(SourceLocation SL, std::string FunctionName,
-                             CooperativeGroupsFunctionRule *ThisPtrOfRule)
-        : SL(SL), FunctionName(FunctionName), ThisPtrOfRule(ThisPtrOfRule) {}
-    ~ReportUnsupportedWarning() {
-      if (NeedReport) {
-        ThisPtrOfRule->report(SL, Diagnostics::API_NOT_MIGRATED, true,
-                              FunctionName);
-      }
-    }
-    bool NeedReport = true;
-  private:
-    SourceLocation SL;
-    std::string FunctionName;
-    CooperativeGroupsFunctionRule *ThisPtrOfRule = nullptr;
-  };
-
-  ReportUnsupportedWarning RUW(CE->getBeginLoc(), FuncName, this);
-  if (FuncName == "sync" || FuncName == "thread_rank" || FuncName == "size" ||
-      FuncName == "shfl_down" || FuncName == "shfl_up" || FuncName == "shfl" ||
-      FuncName == "shfl_xor" || FuncName == "meta_group_rank" ||
-      FuncName == "reduce" || FuncName == "thread_index" ||
-      FuncName == "group_index" || FuncName == "num_threads" ||
-      FuncName == "inclusive_scan" || FuncName == "exclusive_scan" ||
-      FuncName == "coalesced_threads" || FuncName == "this_grid" ||
-      FuncName == "num_blocks" || FuncName == "block_rank") {
-    // There are 3 usages of cooperative groups APIs.
-    // 1. cg::thread_block tb; tb.sync(); // member function
-    // 2. cg::thread_block tb; cg::sync(tb); // free function
-    // 3. cg::thread_block::sync(); // static function
-    // Value meaning: is_migration_support/is_original_code_support
-    // FunctionName  Case1 Case2 Case3
-    // sync          1/1   1/1   0/1
-    // thread_rank   1/1   1/1   0/1
-    // size          1/1   0/0   1/1
-    // num_threads   1/1   0/0   1/1
-    // shfl_down     1/1   0/0   0/0
-    // shfl_up       1/1   0/0   0/0
-    // shfl_xor      1/1   0/0   0/0
-    // meta_group_rank 1/1   0/0   0/0
-
-    ExprAnalysis EA(CE);
-    emplaceTransformation(EA.getReplacement());
-    EA.applyAllSubExprRepl();
-    RUW.NeedReport = false;
-  } else if (FuncName == "this_thread_block") {
-    RUW.NeedReport = false;
-    emplaceTransformation(
-        new ReplaceStmt(CE, DpctGlobalInfo::getGroup(CE)));
-  } else if (FuncName == "tiled_partition") {
-    RUW.NeedReport = false;
-    ExprAnalysis EA(CE);
-    emplaceTransformation(EA.getReplacement());
-    EA.applyAllSubExprRepl();
-
-    CheckParamType Checker1(
-        0, "const class cooperative_groups::__v1::thread_block &");
-    CheckIntergerTemplateArgValueNE Checker2(0, 32);
-    CheckIntergerTemplateArgValueLE Checker3(0, 32);
-    if (Checker1(CE) && Checker3(CE)) {
-      auto FuncInfo = DeviceFunctionDecl::LinkRedecls(
-          DpctGlobalInfo::getParentFunction(CE));
-      if (FuncInfo) {
-        FuncInfo->getVarMap().Dim = 3;
-        if (Checker2(CE) && DpctGlobalInfo::useLogicalGroup()) {
-          FuncInfo->addSubGroupSizeRequest(32, CE->getBeginLoc(),
-                                           MapNames::getDpctNamespace() +
-                                               "experimental::logical_group");
-        } else {
-          FuncInfo->addSubGroupSizeRequest(32, CE->getBeginLoc(),
-                                           DpctGlobalInfo::getSubGroup(CE));
-        }
-      }
-    }
-  }
-}
-
-#undef EMIT_WARNING_AND_RETURN
 
 void SyncThreadsRule::registerMatcher(MatchFinder &MF) {
   auto SyncAPI = [&]() {

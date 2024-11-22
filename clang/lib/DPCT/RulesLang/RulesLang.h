@@ -28,6 +28,18 @@ namespace dpct {
 // utils
 bool isAssignOperator(const Stmt *);
 
+const Expr *getRhs(const Stmt *);
+TextModification *ReplaceMemberAssignAsSetMethod(
+    SourceLocation EndLoc, const MemberExpr *ME, StringRef MethodName,
+    StringRef ReplacedArg, StringRef ExtraArg = "", StringRef ExtraFeild = "");
+
+TextModification *ReplaceMemberAssignAsSetMethod(const Expr *E,
+                                                 const MemberExpr *ME,
+                                                 StringRef MethodName,
+                                                 StringRef ReplacedArg = "",
+                                                 StringRef ExtraArg = "",
+                                                 StringRef ExtraFeild = "");
+
 /// Migration rule for iteration space built-in variables (threadIdx, etc).
 class IterationSpaceBuiltinRule
     : public NamedMigrationRule<IterationSpaceBuiltinRule> {
