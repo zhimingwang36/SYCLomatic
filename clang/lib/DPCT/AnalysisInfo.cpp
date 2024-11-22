@@ -23,7 +23,6 @@
 #include "clang/Tooling/Tooling.h"
 #include <algorithm>
 #include <deque>
-#include <fstream>
 #include <optional>
 #include <string>
 #define TYPELOC_CAST(Target) static_cast<const Target &>(TL)

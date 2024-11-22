@@ -7,13 +7,10 @@
 //===----------------------------------------------------------------------===//
 
 #include "RulesLangLib/CUBAPIMigration.h"
-#include "ASTTraversal.h"
-#include "TextModification.h"
 #include "AnalysisInfo.h"
-#include "RuleInfra/CallExprRewriter.h"
+#include "MigrationRuleManager.h"
 #include "RuleInfra/ASTmatcherCommon.h"
 #include "RuleInfra/ExprAnalysis.h"
-#include "MigrationRuleManager.h"
 #include "TextModification.h"
 #include "Utility.h"
 #include "clang/AST/Attrs.inc"
@@ -30,20 +27,12 @@
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/Analysis/AnalysisDeclContext.h"
-#include "clang/Basic/AttrKinds.h"
-#include "clang/Basic/CharInfo.h"
 #include "clang/Basic/LLVM.h"
-#include "clang/Tooling/Tooling.h"
-#include "llvm/ADT/None.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/StringRef.h"
-#include "llvm/ADT/StringSet.h"
 #include "llvm/ADT/Twine.h"
 #include "llvm/Support/Casting.h"
-#include "llvm/Support/Path.h"
 #include "llvm/Support/raw_ostream.h"
 #include <cstdlib>
-#include <iterator>
 #include <memory>
 #include <optional>
 #include <vector>

@@ -10,7 +10,6 @@
 #include "Diagnostics/Diagnostics.h"
 #include "FileGenerator/GenFiles.h"
 #include "RulesLang/MapNamesLang.h"
-#include "RulesLangLib/MapNamesLangLib.h"
 #include "TextModification.h"
 #include "Utility.h"
 #include "clang/AST/Decl.h"
