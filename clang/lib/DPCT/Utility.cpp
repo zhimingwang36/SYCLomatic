@@ -78,7 +78,7 @@ const char *getNL(bool AddBackSlash) {
     return "\\\n";
   }
   return "\n";
-#elif defined(_WIN64)
+#elif defined(_WIN32)
   if (AddBackSlash) {
     return "\\\r\n";
   }
