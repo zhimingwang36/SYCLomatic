@@ -8,27 +8,6 @@
 
 #ifndef __DPCT_DETAIL_MEMORY_DETAIL_HPP__
 #define __DPCT_DETAIL_MEMORY_DETAIL_HPP__
-#include "device.hpp"
-#include <cassert>
-#include <cstdint>
-#include <cstring>
-#include <map>
-#include <mutex>
-#include <sycl/sycl.hpp>
-#include <thread>
-#include <type_traits>
-#include <unordered_map>
-#include <utility>
-#if defined(__linux__)
-#include <sys/mman.h>
-#elif defined(_WIN64)
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#include <windows.h>
-#else
-#error "Only support Windows and Linux."
-#endif
 
 namespace dpct {
 

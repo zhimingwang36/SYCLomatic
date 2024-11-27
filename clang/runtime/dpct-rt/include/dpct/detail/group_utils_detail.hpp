@@ -12,9 +12,6 @@
 #include <stdexcept>
 #include <sycl/sycl.hpp>
 
-#include "dpct.hpp"
-#include "dpl_extras/functional.h"
-
 namespace dpct {
 namespace detail {
 
