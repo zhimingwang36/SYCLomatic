@@ -13,6 +13,8 @@
 #include <sycl/sycl.hpp>
 
 namespace dpct {
+
+namespace group {
 namespace detail {
 
 typedef uint16_t digit_counter_type;
@@ -216,5 +218,6 @@ __dpct_inline__ uint32_t shr_add(uint32_t x, uint32_t shift, uint32_t addend) {
 }
 
 } // namespace detail
+} // namespace group
 } // namespace dpct
 #endif // !__DPCT_DETAIL_GROUP_UTILS_DETAIL_HPP__
