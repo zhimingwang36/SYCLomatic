@@ -5,7 +5,6 @@
 // See https://llvm.org/LICENSE.txt for license information.
 //
 //===---------------------------------------------------------------------===//
-
 #ifndef __DPCT_DETAIL_GROUP_UTILS_DETAIL_HPP__
 #define __DPCT_DETAIL_GROUP_UTILS_DETAIL_HPP__
 
