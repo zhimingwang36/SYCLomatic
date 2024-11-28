@@ -58,6 +58,7 @@ class image_matrix;
 template <class T, memory_region Memory, size_t Dimension> class accessor;
 static inline void dpct_free(void *ptr, sycl::queue &q);
 template <typename T> static sycl::buffer<T> get_buffer(const void *ptr);
+static buffer_t get_buffer(const void *ptr);
 
 /// Pitched 2D/3D memory data.
 class pitched_data {

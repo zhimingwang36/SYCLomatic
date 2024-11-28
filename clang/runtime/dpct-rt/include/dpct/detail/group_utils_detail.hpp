@@ -1,4 +1,4 @@
-//==---- group_utils_detail.hpp.hpp -----------------*- C++----------------==//
+//==---- group_utils_detail.hpp ---------------------*- C++----------------==//
 //
 // Copyright (C) Intel Corporation
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
