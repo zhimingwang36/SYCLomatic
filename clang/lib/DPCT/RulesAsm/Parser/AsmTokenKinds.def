@@ -404,6 +404,9 @@ MODIFIER(idx, ".idx")
 MODIFIER(bfly, ".bfly")
 MODIFIER(sc, ".sc")
 MODIFIER(gl, ".gl")
+MODIFIER(L1, ".L1")
+MODIFIER(L2, ".L2")
+
 
 #undef LINKAGE
 #undef TARGET
