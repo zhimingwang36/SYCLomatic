@@ -640,6 +640,7 @@ protected:
   void analyzeExpr(const CallExpr *CE);
   void analyzeExpr(const CXXMemberCallExpr *CMCE);
   void analyzeExpr(const CXXBindTemporaryExpr *CBTE);
+  void analyzeExpr(const ImplicitCastExpr *ICE);
   void analyzeExpr(const CompoundStmt *CS);
   void analyzeExpr(const ReturnStmt *RS);
   void analyzeExpr(const LambdaExpr *LE);
